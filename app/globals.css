@@ -1,0 +1,1344 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* vim-clay: shadcn's grey .dark tokens retinted to oklch(L 0.02 290) so its dialogs match the clay ramp. */
+.dark {
+  --background: oklch(0.145 0.02 290);
+  --foreground: oklch(0.985 0.02 290);
+  --card: oklch(0.205 0.02 290);
+  --card-foreground: oklch(0.985 0.02 290);
+  --popover: oklch(0.205 0.02 290);
+  --popover-foreground: oklch(0.985 0.02 290);
+  --primary: oklch(0.922 0.02 290);
+  --primary-foreground: oklch(0.205 0.02 290);
+  --secondary: oklch(0.269 0.02 290);
+  --secondary-foreground: oklch(0.985 0.02 290);
+  --muted: oklch(0.269 0.02 290);
+  --muted-foreground: oklch(0.708 0.02 290);
+  --accent: oklch(0.269 0.02 290);
+  --accent-foreground: oklch(0.985 0.02 290);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0.02 290);
+  --chart-1: oklch(0.87 0.02 290);
+  --chart-2: oklch(0.556 0.02 290);
+  --chart-3: oklch(0.439 0.02 290);
+  --chart-4: oklch(0.371 0.02 290);
+  --chart-5: oklch(0.269 0.02 290);
+  --sidebar: oklch(0.205 0.02 290);
+  --sidebar-foreground: oklch(0.985 0.02 290);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0.02 290);
+  --sidebar-accent: oklch(0.269 0.02 290);
+  --sidebar-accent-foreground: oklch(0.985 0.02 290);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0.02 290);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+}
+
+/* clay.css starts here. Local edits are marked vim-clay: */
+
+/* 0. REGISTERED PROPERTIES: --clay-hue is a registered <color> so the mode crossfade can animate it. */
+@property --clay-hue {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #7b6bf0;
+}
+@property --clay-hue-ink {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #3b2e8f;
+}
+
+/* 1. TAILWIND BRIDGE */
+@theme {
+  --color-clay-bg: var(--clay-bg);
+  --color-clay-surface: var(--clay-surface);
+  --color-clay-sunken: var(--clay-sunken);
+  --color-clay-ink: var(--clay-ink);
+  --color-clay-ink-soft: var(--clay-ink-soft);
+  --color-clay-violet: var(--clay-violet);
+  --color-clay-blue: var(--clay-blue);
+  --color-clay-mint: var(--clay-mint);
+  --color-clay-butter: var(--clay-butter);
+  --color-clay-coral: var(--clay-coral);
+
+  --radius-key: var(--r-key);
+  --radius-chip: var(--r-chip);
+  --radius-card: var(--r-card);
+  --radius-hero: var(--r-hero);
+
+  /* vim-clay: the next/font variable goes before each family name; the font stacks are written only here. */
+  --font-display: var(--font-fredoka), Fredoka, ui-rounded, system-ui, sans-serif;
+  --font-body: var(--font-nunito-sans), 'Nunito Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono:
+    var(--font-jetbrains-mono), 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
+/* 2. TOKENS, TIER 1: docs/CONTRACT.md §2 */
+:root {
+  --clay-bg: #e9e7fb;
+  --clay-surface: #f5f4ff;
+  --clay-sunken: #dedbf6;
+  --clay-ink: #241f42;
+
+  /* Not the contract's #6B64A0, which measures 4.37:1 on --clay-bg and fails AA. */
+  --clay-ink-soft: #5f5892;
+
+  --clay-violet: #7b6bf0;
+  --clay-blue: #9ec0ff;
+  --clay-mint: #8fe6c4;
+  --clay-butter: #ffd98e;
+  --clay-coral: #ff9aa8;
+
+  --clay-raised: #ffffff;
+
+  --clay-lit: #ffffff;
+  --clay-btn-primary-hover: color-mix(in oklab, var(--clay-violet-deep) 88%, #000);
+  --clay-ring-groove: color-mix(in oklab, var(--clay-ink-soft) 14%, var(--clay-sunken));
+  --clay-selection-ink: var(--clay-ink);
+  --clay-on-dark-focus: #ffffff;
+  --clay-on-dark-halo: var(--clay-violet);
+  --clay-lit-solid: #ffffff;
+  --clay-depth: var(--clay-ink);
+
+  --r-key: 14px;
+  --r-chip: 18px;
+  --r-card: 28px;
+  --r-hero: 44px;
+}
+
+/* 3. TOKENS, TIER 2 */
+:root {
+  /* Decorative or disabled only: 3.07-3.41:1, deliberately below the body-text floor. */
+  --clay-ink-muted: #7e76ac;
+
+  /* White on brand violet is 4.04:1, so a solid violet fill carrying a label uses this (6.33:1). */
+  --clay-violet-deep: #5b47d6;
+
+  /* -ink is the dark ink for a fill above the dark-mode dead band, -lit the light ink for one below it. */
+  --clay-violet-ink: #34277f;
+  --clay-blue-ink: #16406f;
+  --clay-mint-ink: #10614a;
+  --clay-butter-ink: #6b4a05;
+  --clay-coral-ink: #7e1f32;
+
+  --clay-violet-lit: var(--clay-violet-ink);
+  --clay-blue-lit: var(--clay-blue-ink);
+  --clay-mint-lit: var(--clay-mint-ink);
+  --clay-butter-lit: var(--clay-butter-ink);
+  --clay-coral-lit: var(--clay-coral-ink);
+
+  --clay-on-violet: #ffffff;
+
+  --clay-hue-lit: var(--clay-violet-lit);
+
+  --clay-focus: var(--clay-violet-deep);
+  --clay-focus-halo: var(--clay-lit-solid);
+  --clay-focus-width: 3px;
+  --clay-focus-gap: 3px;
+
+  --clay-editor: #282247;
+  --clay-editor-rim: #171335;
+  --clay-code: #ddd6f2;
+  --clay-code-dim: #9a8fcc;
+  --clay-code-kw: #c4a8ff;
+  --clay-code-str: #8fe6c4;
+  --clay-code-num: #ffd98e;
+  --clay-code-fn: #9ec0ff;
+  --clay-code-com: #948ac4;
+
+  --clay-shade: 29%;
+  /* Its own token, not shade plus a step: the alpha-to-lightness curve is not linear. */
+  --clay-shade-deep: 36%;
+  --clay-lift: 0.92;
+
+  /* Every movement in this file is multiplied by --motion; reduced motion sets it to 0. */
+  --motion: 1;
+
+  --t-press-in: 45ms;
+  --t-press-out: 170ms;
+  --e-press-in: cubic-bezier(0.3, 0, 0.7, 0.4);
+  --e-press-out: cubic-bezier(0.22, 1.35, 0.5, 1);
+
+  --t-hover: 120ms;
+  --e-hover: cubic-bezier(0.2, 0.8, 0.3, 1);
+
+  --t-mode: 260ms;
+  --e-mode: cubic-bezier(0.2, 0.7, 0.3, 1);
+
+  --t-puff: 420ms;
+  --e-puff: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion: 0;
+  }
+}
+
+.rm {
+  --motion: 0;
+}
+
+/* 4. BASE */
+body {
+  background:
+    radial-gradient(
+      1100px 600px at 12% -8%,
+      color-mix(in oklab, var(--clay-violet) 16%, var(--clay-bg)) 0%,
+      transparent 62%
+    ),
+    radial-gradient(
+      900px 520px at 95% 2%,
+      color-mix(in oklab, var(--clay-mint) 22%, var(--clay-bg)) 0%,
+      transparent 64%
+    ),
+    var(--clay-bg);
+  background-attachment: fixed;
+  color: var(--clay-ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+.clay-display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--clay-ink);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+h1 {
+  font-size: clamp(2.25rem, 1.6rem + 2.6vw, 3.75rem);
+  line-height: 1.04;
+}
+h2 {
+  font-size: clamp(1.6rem, 1.3rem + 1.3vw, 2.125rem);
+  line-height: 1.15;
+}
+h3 {
+  font-size: 1.3125rem;
+  line-height: 1.25;
+}
+
+code,
+kbd,
+samp,
+pre,
+.clay-mono {
+  font-family: var(--font-mono);
+}
+
+::selection {
+  background: var(--clay-butter);
+  color: var(--clay-selection-ink);
+}
+
+/* 5. THE SHADOW ENGINE: declared on *, not :root, so each element resolves its own --clay-hue. */
+*,
+::before,
+::after {
+  /* The hue taken into the ink, not the raw pastel: butter and mint are lighter than the page. */
+  --clay-drop: color-mix(in oklab, var(--clay-hue) 40%, var(--clay-depth));
+  --sh: color-mix(in srgb, var(--clay-drop) var(--clay-shade), transparent);
+  --sh-deep: color-mix(in srgb, var(--clay-drop) var(--clay-shade-deep), transparent);
+  --lift: color-mix(in oklab, var(--clay-lit) calc(var(--clay-lift) * 100%), transparent);
+  --spill: color-mix(in oklab, var(--clay-hue) calc(var(--clay-lift) * 100%), transparent);
+  --crown: color-mix(in srgb, var(--clay-lit) 95%, transparent);
+  --clay-hue-rim: color-mix(in oklab, var(--clay-hue-ink) 85%, var(--clay-hue));
+  --clay-hue-edge: color-mix(in oklab, var(--clay-hue-ink) 35%, var(--clay-hue));
+
+  --clay-shadow-key:
+    0 5px 10px -4px var(--sh), -3px -3px 8px -4px var(--lift), inset 0 2px 3px -1px var(--crown),
+    inset 0 -5px 8px -4px var(--sh-deep);
+
+  --clay-shadow-chip:
+    0 8px 16px -8px var(--sh), -4px -4px 10px -6px var(--lift), inset 0 4px 7px -3px var(--crown),
+    inset 0 -6px 10px -5px var(--sh);
+
+  --clay-shadow-card:
+    0 18px 40px -12px var(--sh), -8px -8px 22px -12px var(--lift),
+    inset 0 10px 20px -6px var(--crown), inset 0 -10px 18px -8px var(--sh);
+
+  --clay-shadow-hero:
+    0 30px 64px -20px var(--sh), -12px -12px 34px -18px var(--lift),
+    inset 0 16px 30px -10px var(--crown), inset 0 -16px 28px -12px var(--sh);
+
+  --clay-shadow-well:
+    inset 0 8px 16px -6px var(--sh-deep),
+    inset 0 -6px 12px -8px color-mix(in srgb, var(--clay-lit) 80%, transparent);
+
+  --clay-fill-tint: color-mix(in oklab, var(--clay-hue) 30%, var(--clay-surface));
+  --clay-fill-tint-strong: color-mix(in oklab, var(--clay-hue) 62%, var(--clay-surface));
+  --clay-fill-title: color-mix(in oklab, var(--clay-hue) 12%, var(--clay-surface));
+  --clay-fill-status: color-mix(in oklab, var(--clay-hue) 72%, var(--clay-surface));
+  --clay-fill-press: color-mix(in oklab, var(--clay-hue) 52%, var(--clay-surface));
+  --clay-fill-mode-chip: color-mix(in oklab, var(--clay-hue) 40%, var(--clay-lit-solid));
+  --clay-press-ring: color-mix(in oklab, var(--clay-hue) 30%, transparent);
+  --clay-chip-crown: color-mix(in srgb, var(--clay-lit) 90%, transparent);
+}
+
+.hue-violet {
+  --clay-hue: var(--clay-violet);
+  --clay-hue-ink: var(--clay-violet-ink);
+  --clay-hue-lit: var(--clay-violet-lit);
+}
+.hue-blue {
+  --clay-hue: var(--clay-blue);
+  --clay-hue-ink: var(--clay-blue-ink);
+  --clay-hue-lit: var(--clay-blue-lit);
+}
+.hue-mint {
+  --clay-hue: var(--clay-mint);
+  --clay-hue-ink: var(--clay-mint-ink);
+  --clay-hue-lit: var(--clay-mint-lit);
+}
+.hue-butter {
+  --clay-hue: var(--clay-butter);
+  --clay-hue-ink: var(--clay-butter-ink);
+  --clay-hue-lit: var(--clay-butter-lit);
+}
+.hue-coral {
+  --clay-hue: var(--clay-coral);
+  --clay-hue-ink: var(--clay-coral-ink);
+  --clay-hue-lit: var(--clay-coral-lit);
+}
+
+/* 6. CLAY SURFACES */
+.clay {
+  background: var(--clay-surface);
+  color: var(--clay-ink);
+  border-radius: var(--r-card);
+  box-shadow: var(--clay-shadow-card);
+  transition:
+    box-shadow calc(var(--motion) * var(--t-hover)) var(--e-hover),
+    background-color var(--t-mode) var(--e-mode),
+    transform calc(var(--motion) * var(--t-press-out)) var(--e-press-out);
+}
+
+.clay-chip {
+  border-radius: var(--r-chip);
+  box-shadow: var(--clay-shadow-chip);
+}
+.clay-card {
+  border-radius: var(--r-card);
+  box-shadow: var(--clay-shadow-card);
+}
+.clay-hero {
+  border-radius: var(--r-hero);
+  box-shadow: var(--clay-shadow-hero);
+}
+.clay-pill {
+  border-radius: 999px;
+  box-shadow: var(--clay-shadow-chip);
+}
+
+.clay-well {
+  background: var(--clay-sunken);
+  border-radius: var(--r-chip);
+  box-shadow: var(--clay-shadow-well);
+}
+.clay-well.clay-card {
+  border-radius: var(--r-card);
+}
+
+.clay-tint {
+  background: var(--clay-fill-tint);
+}
+.clay-tint .clay-secondary {
+  color: var(--clay-hue-lit);
+  /* vim-clay: no opacity here; clay.css's 0.82 put secondary text below AA on mint and butter tints. */
+}
+.clay-tint-strong {
+  background: var(--clay-fill-tint-strong);
+  color: var(--clay-hue-lit);
+}
+
+.clay-press {
+  cursor: pointer;
+}
+.clay-press:active {
+  transform: translateY(calc(var(--motion) * 2px));
+  transition-duration: calc(var(--motion) * var(--t-press-in));
+  transition-timing-function: var(--e-press-in);
+  box-shadow:
+    0 8px 18px -10px var(--sh),
+    -3px -3px 10px -8px var(--lift),
+    inset 0 6px 14px -6px color-mix(in srgb, var(--clay-lit) 85%, transparent),
+    inset 0 -14px 22px -8px var(--sh-deep);
+}
+
+/* 7. KEY */
+.clay-key {
+  --clay-hue: var(--clay-violet);
+  --clay-hue-ink: var(--clay-violet-ink);
+  --clay-hue-lit: var(--clay-violet-lit);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0 0.6875rem;
+  border: 0;
+
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--clay-ink);
+
+  border-radius: var(--r-key);
+
+  /* Keep colour and image split: the background shorthand makes the colour transparent mid-press. */
+  background-color: var(--clay-surface);
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--clay-lit) 90%, transparent) 0%,
+    color-mix(in srgb, var(--clay-lit) 0%, transparent) 55%,
+    color-mix(in oklab, var(--clay-depth) 9%, transparent) 100%
+  );
+  box-shadow: var(--clay-shadow-key);
+
+  transform: translateY(0) scaleY(1);
+  transform-origin: 50% 85%;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+
+  transition:
+    transform calc(var(--motion) * var(--t-press-out)) var(--e-press-out),
+    box-shadow calc(var(--motion) * var(--t-press-out)) var(--e-press-out),
+    background-color calc(var(--motion) * var(--t-press-out)) var(--e-press-out),
+    color calc(var(--motion) * var(--t-press-out)) var(--e-press-out);
+}
+
+.clay-key-lg {
+  min-width: 5.5rem;
+  height: 5.5rem;
+  padding: 0 1.25rem;
+  font-size: 2rem;
+  border-radius: 22px;
+  box-shadow:
+    0 12px 24px -8px var(--sh),
+    -6px -6px 16px -8px var(--lift),
+    inset 0 5px 7px -2px var(--crown),
+    inset 0 -10px 16px -7px var(--sh-deep);
+}
+.clay-key-lg:active,
+.clay-key-lg[data-pressed] {
+  transform: translateY(calc(var(--motion) * 5px)) scaleY(calc(1 - var(--motion) * 0.04));
+  box-shadow:
+    0 3px 6px -4px var(--sh),
+    inset 0 14px 20px -8px var(--sh-deep),
+    inset 0 -6px 12px -6px color-mix(in srgb, var(--clay-lit) 55%, transparent),
+    0 0 0 1px color-mix(in oklab, var(--clay-hue) 30%, transparent);
+}
+.clay-key-lg[data-state='mastered'] {
+  box-shadow:
+    0 12px 26px -6px color-mix(in oklab, var(--clay-mint) 62%, transparent),
+    0 0 0 1.5px color-mix(in oklab, var(--clay-mint) 50%, transparent),
+    -6px -6px 16px -8px var(--lift),
+    inset 0 6px 8px -2px color-mix(in srgb, var(--clay-lit) 90%, transparent),
+    inset 0 -12px 18px -7px color-mix(in oklab, var(--clay-mint-ink) 22%, transparent);
+}
+
+.clay-key-wide {
+  min-width: 3.75rem;
+  padding: 0 0.9375rem;
+  font-size: 0.8125rem;
+}
+.clay-key-sm {
+  min-width: 1.875rem;
+  height: 1.875rem;
+  padding: 0 0.5rem;
+  font-size: 0.75rem;
+  border-radius: 10px;
+}
+
+.clay-key:active,
+.clay-key[data-pressed] {
+  transform: translateY(calc(var(--motion) * 2.5px)) scaleY(calc(1 - var(--motion) * 0.04));
+  background-color: var(--clay-fill-press);
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--clay-depth) 14%, transparent) 0%,
+    color-mix(in srgb, var(--clay-lit) 0%, transparent) 62%,
+    color-mix(in srgb, var(--clay-lit) 38%, transparent) 100%
+  );
+  color: var(--clay-hue-lit);
+  box-shadow:
+    0 2px 4px -3px var(--sh),
+    inset 0 7px 10px -4px var(--sh-deep),
+    inset 0 -3px 6px -3px color-mix(in srgb, var(--clay-lit) 55%, transparent),
+    0 0 0 1px var(--clay-press-ring);
+  transition-duration: calc(var(--motion) * var(--t-press-in));
+  transition-timing-function: var(--e-press-in);
+}
+
+.clay-key[data-state='mastered'] {
+  --clay-hue: var(--clay-mint);
+  --clay-hue-ink: var(--clay-mint-ink);
+  --clay-hue-lit: var(--clay-mint-lit);
+  color: var(--clay-mint-ink);
+  background-color: color-mix(in oklab, var(--clay-mint) 66%, var(--clay-surface));
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--clay-lit) 55%, transparent) 0%,
+    color-mix(in srgb, var(--clay-lit) 0%, transparent) 52%,
+    color-mix(in oklab, var(--clay-mint-ink) 16%, transparent) 100%
+  );
+  box-shadow:
+    0 6px 14px -4px color-mix(in oklab, var(--clay-mint) 62%, transparent),
+    0 0 0 1px color-mix(in oklab, var(--clay-mint) 44%, transparent),
+    -3px -3px 8px -4px var(--lift),
+    inset 0 3px 4px -1px color-mix(in srgb, var(--clay-lit) 90%, transparent),
+    inset 0 -6px 9px -4px color-mix(in oklab, var(--clay-mint-ink) 22%, transparent);
+}
+
+.clay-key[disabled],
+.clay-key[data-state='disabled'] {
+  background-color: var(--clay-sunken);
+  background-image: none;
+  color: var(--clay-ink-muted);
+  box-shadow: inset 0 2px 5px -2px var(--sh-deep);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.clay-key-inline {
+  min-width: 1.625rem;
+  height: 1.625rem;
+  padding: 0 0.4375rem;
+  font-size: 0.8125rem;
+  border-radius: 9px;
+  vertical-align: -0.3em;
+  margin: 0 0.0625rem;
+  box-shadow:
+    0 3px 6px -3px var(--sh),
+    inset 0 1px 2px -1px var(--crown),
+    inset 0 -3px 5px -3px var(--sh-deep);
+}
+
+/* 8. BUTTONS */
+.clay-btn {
+  --clay-hue: var(--clay-violet);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 0;
+  cursor: pointer;
+  padding: 0.875rem 1.5rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  border-radius: var(--r-chip);
+  background: var(--clay-surface);
+  color: var(--clay-ink);
+  box-shadow: var(--clay-shadow-chip);
+  transition:
+    transform calc(var(--motion) * var(--t-press-out)) var(--e-press-out),
+    box-shadow calc(var(--motion) * var(--t-hover)) var(--e-hover),
+    background-color calc(var(--motion) * var(--t-hover)) var(--e-hover),
+    color calc(var(--motion) * var(--t-hover)) var(--e-hover);
+}
+.clay-btn:hover {
+  box-shadow: var(--clay-shadow-card);
+}
+.clay-btn:active {
+  transform: translateY(calc(var(--motion) * 2px));
+  transition-duration: calc(var(--motion) * var(--t-press-in));
+  transition-timing-function: var(--e-press-in);
+  box-shadow:
+    0 3px 8px -6px var(--sh),
+    inset 0 6px 12px -5px var(--sh-deep),
+    inset 0 -4px 8px -5px color-mix(in srgb, var(--clay-lit) 70%, transparent);
+}
+.clay-btn[disabled] {
+  background: var(--clay-sunken);
+  color: var(--clay-ink-muted);
+  box-shadow: inset 0 2px 5px -3px var(--sh-deep);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.clay-btn-primary {
+  background: var(--clay-violet-deep);
+  color: var(--clay-on-violet);
+}
+.clay-btn-primary:hover {
+  background: var(--clay-btn-primary-hover);
+}
+.clay-btn-primary[disabled] {
+  background: var(--clay-sunken);
+  color: var(--clay-ink-muted);
+}
+
+.clay-btn-secondary {
+  background: var(--clay-surface);
+  color: var(--clay-ink);
+}
+
+.clay-btn-ghost {
+  background: transparent;
+  color: var(--clay-ink-soft);
+  box-shadow: none;
+}
+.clay-btn-ghost:hover {
+  background: color-mix(in oklab, var(--clay-surface) 70%, transparent);
+  color: var(--clay-ink);
+  box-shadow: var(--clay-shadow-key);
+}
+.clay-btn-ghost:active {
+  box-shadow: var(--clay-shadow-well);
+}
+.clay-btn-ghost[disabled] {
+  background: transparent;
+  box-shadow: none;
+}
+
+.clay-btn-danger {
+  --clay-hue: var(--clay-coral);
+  background: var(--clay-coral);
+  color: var(--clay-coral-ink);
+}
+.clay-btn-danger:hover {
+  background: color-mix(in oklab, var(--clay-coral) 88%, var(--clay-coral-ink));
+}
+.clay-btn-danger[disabled] {
+  background: var(--clay-sunken);
+  color: var(--clay-ink-muted);
+}
+
+/* 9. FOCUS RINGS: halo plus ring, as neither alone clears 3:1 on both the page and the dark well. */
+:where(.clay, .clay-key, .clay-btn, .clay-focusable):focus-visible {
+  outline: var(--clay-focus-width) solid var(--clay-focus);
+  outline-offset: var(--clay-focus-gap);
+}
+.clay:focus-visible {
+  box-shadow:
+    0 0 0 2px var(--clay-focus-halo),
+    var(--clay-shadow-card);
+}
+.clay-key:focus-visible {
+  box-shadow:
+    0 0 0 2px var(--clay-focus-halo),
+    var(--clay-shadow-key);
+}
+.clay-btn:focus-visible {
+  box-shadow:
+    0 0 0 2px var(--clay-focus-halo),
+    var(--clay-shadow-chip);
+}
+
+.clay-on-dark:focus-visible {
+  outline-color: var(--clay-on-dark-focus);
+  box-shadow: 0 0 0 2px var(--clay-on-dark-halo);
+}
+
+/* 10. EDITOR CHROME */
+.clay-editor {
+  --clay-hue: var(--clay-blue);
+  --clay-hue-ink: var(--clay-blue-ink);
+  --clay-hue-lit: var(--clay-blue-lit);
+  background: var(--clay-surface);
+  border-radius: var(--r-card);
+  border: 2px solid var(--clay-hue-edge);
+  box-shadow: var(--clay-shadow-card);
+  overflow: hidden;
+  transition:
+    --clay-hue var(--t-mode) var(--e-mode),
+    border-color var(--t-mode) var(--e-mode),
+    box-shadow var(--t-mode) var(--e-mode);
+}
+.clay-editor[data-mode='normal'] {
+  --clay-hue: var(--clay-blue);
+  --clay-hue-ink: var(--clay-blue-ink);
+  --clay-hue-lit: var(--clay-blue-lit);
+}
+.clay-editor[data-mode='insert'] {
+  --clay-hue: var(--clay-mint);
+  --clay-hue-ink: var(--clay-mint-ink);
+  --clay-hue-lit: var(--clay-mint-lit);
+}
+.clay-editor[data-mode='visual'] {
+  --clay-hue: var(--clay-butter);
+  --clay-hue-ink: var(--clay-butter-ink);
+  --clay-hue-lit: var(--clay-butter-lit);
+}
+
+.clay-editor-title {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.75rem 1.125rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--clay-ink-soft);
+  background: var(--clay-fill-title);
+  transition: background-color var(--t-mode) var(--e-mode);
+}
+
+.clay-editor-well {
+  background: var(--clay-editor);
+  padding: 1rem 1.125rem;
+  font-family: var(--font-mono);
+  font-size: 0.9375rem;
+  line-height: 1.75;
+  color: var(--clay-code);
+  box-shadow:
+    inset 0 10px 20px -8px var(--clay-editor-rim),
+    inset 0 -10px 20px -12px color-mix(in oklab, var(--clay-hue) 45%, transparent);
+  overflow-x: auto;
+  transition: box-shadow var(--t-mode) var(--e-mode);
+}
+.clay-editor-line {
+  display: flex;
+  gap: 1rem;
+  white-space: pre;
+}
+.clay-editor-gutter {
+  color: var(--clay-code-dim);
+  user-select: none;
+  min-width: 2.25rem;
+  text-align: right;
+  font-size: 0.8125rem;
+  flex: none;
+}
+.clay-editor-line[data-current] .clay-editor-gutter {
+  color: var(--clay-hue);
+  font-weight: 700;
+}
+
+.clay-cursor {
+  display: inline-block;
+  background: var(--clay-hue);
+  color: var(--clay-editor);
+  border-radius: 2px;
+}
+.clay-cursor-bar {
+  display: inline-block;
+  width: 2px;
+  margin-right: -2px;
+  background: var(--clay-hue);
+  border-radius: 2px;
+  vertical-align: text-bottom;
+  height: 1.15em;
+}
+.clay-sel {
+  background: color-mix(in oklab, var(--clay-butter) 34%, transparent);
+  border-radius: 3px;
+}
+
+.tok-kw {
+  color: var(--clay-code-kw);
+}
+.tok-str {
+  color: var(--clay-code-str);
+}
+.tok-num {
+  color: var(--clay-code-num);
+}
+.tok-fn {
+  color: var(--clay-code-fn);
+}
+.tok-com {
+  color: var(--clay-code-com);
+  font-style: italic;
+}
+.tok-dim {
+  color: var(--clay-code-dim);
+}
+
+.clay-status {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--clay-fill-status);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--clay-hue-lit);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--clay-lit) 55%, transparent);
+  transition:
+    background-color var(--t-mode) var(--e-mode),
+    color var(--t-mode) var(--e-mode);
+}
+.clay-status-mode {
+  padding: 0.3125rem 0.75rem;
+  border-radius: 10px;
+  letter-spacing: 0.06em;
+  background: var(--clay-fill-mode-chip);
+  color: var(--clay-hue-ink);
+  box-shadow:
+    inset 0 2px 3px -1px var(--clay-chip-crown),
+    inset 0 -3px 5px -2px color-mix(in oklab, var(--clay-hue-ink) 20%, transparent);
+  white-space: nowrap;
+}
+.clay-status-file {
+  opacity: 0.85;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.clay-status-right {
+  margin-left: auto;
+  display: flex;
+  gap: 0.875rem;
+  align-items: center;
+  white-space: nowrap;
+}
+.clay-status-pending {
+  min-width: 3.5rem;
+  text-align: right;
+  opacity: 0.8;
+}
+
+/* 11. PROGRESS */
+
+.clay-ring {
+  display: block;
+  transform: rotate(-90deg);
+}
+.clay-ring-track {
+  fill: none;
+  stroke: var(--clay-ring-groove);
+}
+/* A pastel arc cannot reach the 3:1 WCAG 1.4.11 asks for, so a darker under-stroke carries its shape. */
+.clay-ring-rim {
+  fill: none;
+  stroke: var(--clay-hue-rim);
+  stroke-linecap: round;
+}
+.clay-ring-arc {
+  fill: none;
+  stroke: var(--clay-hue);
+  stroke-linecap: round;
+  transition: stroke-dashoffset calc(var(--motion) * 600ms + 1ms) var(--e-puff);
+}
+.clay-ring-wrap {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+}
+.clay-ring-label {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--clay-ink);
+}
+
+.clay-bar {
+  position: relative;
+  height: 0.875rem;
+  border-radius: 999px;
+  background: var(--clay-sunken);
+  box-shadow: var(--clay-shadow-well);
+  overflow: hidden;
+}
+.clay-bar-ghost {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--clay-ink-soft) 26%, transparent);
+}
+.clay-bar-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 999px;
+  background: var(--clay-hue);
+  box-shadow:
+    0 0 0 1px var(--clay-hue-rim),
+    inset 0 2px 3px -1px color-mix(in srgb, var(--clay-lit) 70%, transparent),
+    inset 0 -3px 5px -2px var(--clay-hue-rim);
+  transition: width calc(var(--motion) * 300ms + 1ms) linear;
+}
+.clay-bar-notch {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--clay-ink);
+  opacity: 0.55;
+}
+
+/* 12. KEYBOARD HEATMAP: mastery is encoded by elevation as well as hue, for colourblind readers. */
+.clay-heat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  align-items: center;
+}
+.clay-heat-row {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.clay-key[data-heat='none'] {
+  background-color: var(--clay-surface);
+  color: var(--clay-ink-muted);
+  box-shadow:
+    inset 0 1px 3px -1px var(--sh),
+    0 1px 2px -1px var(--sh);
+}
+.clay-key[data-heat='1'] {
+  --clay-hue: var(--clay-coral);
+  --clay-hue-lit: var(--clay-coral-lit);
+  color: var(--clay-coral-ink);
+  background-color: color-mix(in oklab, var(--clay-coral) 74%, var(--clay-surface));
+  box-shadow: inset 0 3px 6px -2px color-mix(in oklab, var(--clay-coral-ink) 26%, transparent);
+}
+.clay-key[data-heat='2'] {
+  --clay-hue: var(--clay-coral);
+  --clay-hue-lit: var(--clay-coral-lit);
+  color: var(--clay-coral-ink);
+  background-color: color-mix(
+    in oklab,
+    color-mix(in oklab, var(--clay-coral) 55%, var(--clay-butter)) 74%,
+    var(--clay-surface)
+  );
+  box-shadow:
+    inset 0 2px 5px -2px color-mix(in oklab, var(--clay-coral-ink) 18%, transparent),
+    0 2px 4px -3px var(--sh);
+}
+.clay-key[data-heat='3'] {
+  --clay-hue: var(--clay-butter);
+  --clay-hue-lit: var(--clay-butter-lit);
+  color: var(--clay-butter-ink);
+  background-color: color-mix(in oklab, var(--clay-butter) 76%, var(--clay-surface));
+  box-shadow: var(--clay-shadow-key);
+}
+.clay-key[data-heat='4'] {
+  --clay-hue: var(--clay-mint);
+  --clay-hue-lit: var(--clay-mint-lit);
+  color: var(--clay-mint-ink);
+  background-color: color-mix(
+    in oklab,
+    color-mix(in oklab, var(--clay-mint) 58%, var(--clay-butter)) 78%,
+    var(--clay-surface)
+  );
+  box-shadow: var(--clay-shadow-key);
+}
+.clay-key[data-heat='5'] {
+  --clay-hue: var(--clay-mint);
+  --clay-hue-lit: var(--clay-mint-lit);
+  color: var(--clay-mint-ink);
+  background-color: color-mix(in oklab, var(--clay-mint) 80%, var(--clay-surface));
+  box-shadow:
+    0 6px 14px -4px color-mix(in oklab, var(--clay-mint) 62%, transparent),
+    0 0 0 1px color-mix(in oklab, var(--clay-mint) 44%, transparent),
+    inset 0 3px 4px -1px color-mix(in srgb, var(--clay-lit) 90%, transparent),
+    inset 0 -6px 9px -4px color-mix(in oklab, var(--clay-mint-ink) 20%, transparent);
+}
+
+.clay-heat-legend {
+  display: flex;
+  align-items: stretch;
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: var(--clay-shadow-well);
+}
+.clay-heat-legend > span {
+  padding: 0.375rem 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+/* 13. THE SUCCESS PUFF */
+.clay-puff {
+  position: relative;
+}
+.clay-puff::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  animation: clay-puff-ring var(--t-puff) var(--e-puff) forwards;
+}
+@keyframes clay-puff-ring {
+  from {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--clay-mint) 55%, transparent);
+    opacity: 1;
+  }
+  to {
+    box-shadow: 0 0 0 calc(var(--motion) * 18px)
+      color-mix(in oklab, var(--clay-mint) 0%, transparent);
+    opacity: 0;
+  }
+}
+
+.clay-bloom {
+  animation: clay-bloom var(--t-puff) var(--e-mode) forwards;
+}
+@keyframes clay-bloom {
+  0% {
+    --clay-hue: var(--clay-violet);
+  }
+  35% {
+    --clay-hue: var(--clay-mint);
+  }
+  100% {
+    --clay-hue: var(--clay-mint);
+  }
+}
+
+.clay-settle {
+  animation: clay-settle calc(var(--motion) * 100ms + 140ms) var(--e-puff) both;
+}
+@keyframes clay-settle {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--motion) * 4px));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 14. REDUCED MOTION */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* END OF clay.css */
+
+.clay-code {
+  display: inline-block;
+  padding: 0.05em 0.4em;
+  margin: 0 0.1em;
+  border-radius: 8px;
+  background: color-mix(in oklab, var(--clay-sunken) 70%, var(--clay-surface));
+  box-shadow: inset 0 1px 3px -1px var(--sh-deep);
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  color: var(--clay-ink);
+}
+
+.clay-prose {
+  font-size: 1.0625rem;
+  line-height: 1.85;
+  color: var(--clay-ink);
+  max-width: 68ch;
+}
+
+.clay-prose strong {
+  font-weight: 800;
+  color: var(--clay-ink);
+}
+
+.clay-secondary {
+  color: var(--clay-ink-soft);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.clay-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.clay-skip {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 60;
+}
+
+.clay-skip:focus {
+  left: 1rem;
+  top: 1rem;
+}
+
+.clay-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+/* 15. DARK MODE */
+
+/* 15.1 THE TOKENS */
+.dark {
+  --clay-editor-rim: #07001d;
+  --clay-editor: #0e0626;
+  --clay-sunken: #191231;
+  --clay-bg: #221c39;
+  --clay-surface: #302c48;
+  --clay-raised: #3a3651;
+
+  --clay-ink: #e0dbff;
+  --clay-ink-soft: #aba4df;
+  --clay-ink-muted: #7f78ad;
+
+  --clay-violet-lit: #baa6ff;
+  --clay-blue-lit: var(--clay-blue);
+  --clay-mint-lit: var(--clay-mint);
+  --clay-butter-lit: var(--clay-butter);
+  --clay-coral-lit: var(--clay-coral);
+
+  --clay-focus: var(--clay-violet-lit);
+  --clay-focus-halo: var(--clay-editor-rim);
+  --clay-on-dark-focus: var(--clay-focus);
+  --clay-on-dark-halo: var(--clay-focus-halo);
+
+  --clay-lit: rgb(188 180 244 / 0.15);
+  --clay-lit-solid: #bcb4f4;
+  --clay-depth: #010006;
+
+  --clay-shade: 78%;
+  --clay-shade-deep: 94%;
+  --clay-lift: 0.14;
+
+  --clay-btn-primary-hover: color-mix(in oklab, var(--clay-violet-deep) 84%, var(--clay-lit-solid));
+  --clay-ring-groove: color-mix(in oklab, var(--clay-depth) 30%, var(--clay-sunken));
+  --clay-selection-ink: var(--clay-butter-ink);
+}
+
+/* 15.2 THE DERIVED TOKENS: on every element, for the same reason as section 5. */
+.dark,
+.dark *,
+.dark ::before,
+.dark ::after {
+  --clay-drop: color-mix(in oklab, var(--clay-hue) 10%, var(--clay-depth));
+
+  --clay-fill-tint: color-mix(in oklab, var(--clay-hue) 11%, var(--clay-surface));
+  --clay-fill-tint-strong: color-mix(in oklab, var(--clay-hue) 20%, var(--clay-surface));
+  --clay-fill-title: color-mix(in oklab, var(--clay-hue) 7%, var(--clay-surface));
+  --clay-fill-status: color-mix(in oklab, var(--clay-hue) 17%, var(--clay-surface));
+  /* Into --clay-editor, not --clay-surface, which would brighten the cap on press. */
+  --clay-fill-press: color-mix(in oklab, var(--clay-hue) 16%, var(--clay-editor));
+  --clay-fill-mode-chip: color-mix(in oklab, var(--clay-hue) 96%, var(--clay-surface));
+  --clay-press-ring: color-mix(in oklab, var(--clay-hue) 40%, transparent);
+  --clay-chip-crown: color-mix(in oklab, var(--clay-lit-solid) 55%, transparent);
+
+  --clay-shadow-key:
+    0 5px 9px -5px var(--sh), 0 10px 22px -8px var(--spill), inset 0 3px 5px -1px var(--crown),
+    inset 0 -5px 8px -4px var(--sh-deep);
+
+  --clay-shadow-chip:
+    0 8px 14px -7px var(--sh), 0 16px 34px -12px var(--spill), inset 0 5px 9px -3px var(--crown),
+    inset 0 -7px 12px -5px var(--sh-deep);
+
+  --clay-shadow-card:
+    0 12px 22px -10px var(--sh), 0 24px 54px -18px var(--spill),
+    inset 0 12px 22px -8px var(--crown), inset 0 -12px 20px -8px var(--sh-deep);
+
+  --clay-shadow-hero:
+    0 20px 38px -16px var(--sh), 0 40px 88px -28px var(--spill),
+    inset 0 18px 34px -12px var(--crown), inset 0 -18px 30px -12px var(--sh-deep);
+
+  --clay-shadow-well: inset 0 9px 18px -6px var(--sh-deep), inset 0 -7px 13px -9px var(--crown);
+}
+
+/* 15.3 THE BODY WASHES */
+.dark body {
+  background:
+    radial-gradient(
+      1100px 600px at 12% -8%,
+      color-mix(in oklab, var(--clay-violet) 14%, var(--clay-bg)) 0%,
+      transparent 62%
+    ),
+    radial-gradient(
+      900px 520px at 95% 2%,
+      color-mix(in oklab, var(--clay-mint) 4%, var(--clay-bg)) 0%,
+      transparent 64%
+    ),
+    var(--clay-bg);
+}
+
+/* 15.4 THE RULES DARK ACTUALLY CHANGES: each is a different design, not a different token value. */
+
+/* Both hardcode their own recipe, so the white bounce becomes the coloured spill here. */
+.dark .clay-key-lg {
+  box-shadow:
+    0 9px 16px -8px var(--sh),
+    0 18px 40px -14px var(--spill),
+    inset 0 5px 7px -2px var(--crown),
+    inset 0 -10px 16px -7px var(--sh-deep);
+}
+.dark .clay-press:active {
+  box-shadow:
+    0 4px 10px -8px var(--sh),
+    inset 0 6px 14px -6px color-mix(in oklab, var(--clay-lit) 85%, transparent),
+    inset 0 -14px 22px -8px var(--sh-deep);
+}
+
+/* 66% mint sits in the dead band in dark; 96% clears it with the dark ink. */
+.dark .clay-key[data-state='mastered'] {
+  background-color: color-mix(in oklab, var(--clay-mint) 96%, var(--clay-surface));
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--clay-lit) 55%, transparent) 0%,
+    transparent 52%,
+    color-mix(in oklab, var(--clay-mint-ink) 16%, transparent) 100%
+  );
+  box-shadow:
+    0 6px 16px -4px color-mix(in oklab, var(--clay-mint) 40%, transparent),
+    0 0 0 1px color-mix(in oklab, var(--clay-mint) 55%, transparent),
+    inset 0 3px 4px -1px color-mix(in oklab, var(--clay-lit) 90%, transparent),
+    inset 0 -6px 9px -4px color-mix(in oklab, var(--clay-mint-ink) 22%, transparent);
+}
+
+/* All five bands go to 96%, above the dead band: 4.58-5.53:1 with the dark ink. */
+.dark .clay-key[data-heat='1'] {
+  background-color: color-mix(in oklab, var(--clay-coral) 96%, var(--clay-surface));
+  box-shadow: inset 0 3px 6px -2px color-mix(in oklab, var(--clay-coral-ink) 30%, transparent);
+}
+.dark .clay-key[data-heat='2'] {
+  background-color: color-mix(
+    in oklab,
+    color-mix(in oklab, var(--clay-coral) 55%, var(--clay-butter)) 96%,
+    var(--clay-surface)
+  );
+  box-shadow:
+    inset 0 2px 5px -2px color-mix(in oklab, var(--clay-coral-ink) 22%, transparent),
+    0 2px 4px -3px var(--sh);
+}
+.dark .clay-key[data-heat='3'] {
+  background-color: color-mix(in oklab, var(--clay-butter) 96%, var(--clay-surface));
+  box-shadow:
+    0 5px 9px -5px var(--sh),
+    inset 0 3px 5px -1px color-mix(in oklab, var(--clay-lit-solid) 30%, transparent);
+}
+.dark .clay-key[data-heat='4'] {
+  background-color: color-mix(
+    in oklab,
+    color-mix(in oklab, var(--clay-mint) 58%, var(--clay-butter)) 96%,
+    var(--clay-surface)
+  );
+  box-shadow:
+    0 6px 11px -5px var(--sh),
+    inset 0 3px 5px -1px color-mix(in oklab, var(--clay-lit-solid) 34%, transparent);
+}
+.dark .clay-key[data-heat='5'] {
+  background-color: color-mix(in oklab, var(--clay-mint) 96%, var(--clay-surface));
+  box-shadow:
+    0 6px 16px -4px color-mix(in oklab, var(--clay-mint) 40%, transparent),
+    0 0 0 1px color-mix(in oklab, var(--clay-mint) 55%, transparent),
+    inset 0 3px 4px -1px color-mix(in oklab, var(--clay-lit-solid) 40%, transparent),
+    inset 0 -6px 9px -4px color-mix(in oklab, var(--clay-mint-ink) 20%, transparent);
+}
+
+/* --clay-ink is near-white in dark, so the notch needs more weight on a bright fill. */
+.dark .clay-bar-notch {
+  opacity: 0.7;
+}
+
+/* --clay-surface is lighter than --clay-sunken in dark, so the pill mixes toward the buffer. */
+.dark .clay-code {
+  background: color-mix(in oklab, var(--clay-sunken) 70%, var(--clay-editor));
+}
