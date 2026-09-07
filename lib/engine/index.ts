@@ -2,6 +2,8 @@
 
 export { evaluateGoal, describeGoal } from './goal';
 export { offsetToPos, posToOffset, nthIndexOf } from './text';
+export { useExercise, computeMetrics } from './attempt';
+export type { UseExerciseOptions, UseExerciseResult } from './attempt';
 export type {
   AttemptState,
   EditorMode,
