@@ -28,3 +28,15 @@ export {
   weakestMotions,
   type MotionMastery,
 } from './mastery';
+
+export { SESSION_GAP_MS, sessions, type Session } from './sessions';
+
+export { summarise, type StatsSummary } from './summary';
+
+export {
+  curriculumProgress,
+  curriculumMotions,
+  lessonsForMotion,
+  type LessonProgress,
+  type ModuleProgress,
+} from './curriculum';
