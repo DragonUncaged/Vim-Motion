@@ -1,0 +1,97 @@
+# Project agent memory
+
+Vim Clay is a static, account-free site for learning vim motions. This file is only what
+the tree does not show.
+
+## The rule that overrides everything
+
+No sign-in, no paywall, no account, no backend, ever. No API routes, no env vars, no
+server-side state, no analytics. Progress lives in `localStorage` and moves between devices
+through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier") is a bug.
+
+## Content
+
+- **`content/types.ts` is the contract ~135 hand-written exercises are typed against.** One
+  renamed field breaks all of them. Treat it as published API: raise the change, do not make it
+  quietly. `content/modules.ts` and `content/lessons/index.ts` are the same.
+- **`ModuleId` is what makes wiring a module a compile-time job.** The barrel map in
+  `content/lessons/index.ts` is `Record<ModuleId, Lesson[]>`, so a module in the union with
+  no barrel line does not compile and a barrel line for an id nobody declared does not
+  either; the registry additionally throws on a module with no lessons. Adding a module
+  starts at that union, and the compiler names the other two places.
+- **`content/lessons/index.ts` asserts at import time** that slugs are unique and each module's
+  `order` is dense and 1-based, so a duplicate slug fails `next build` rather than 404ing
+  quietly at runtime.
+
+## Layout that is not obvious from the tree
+
+- **`app/globals.css` is one adopted block.** Everything between the `clay.css starts here`
+  and `END OF clay.css` banners is the `clay.css` the design system was authored as: its
+  rules verbatim, its comments cut to what the rules cannot say. To take a new version,
+  replace that block and re-apply the local edits — every one is marked `vim-clay:`, so
+  `grep -n 'vim-clay:' app/globals.css` lists them. Never hardcode a box-shadow in a
+  component: pick an elevation class and set `--clay-hue` with a `.hue-*` class.
+- **`.hue-*` is inert on `.clay-key`.** The keycap sets `--clay-hue` on itself at equal
+  specificity and later in the file. A probe or a demo that puts `.hue-mint` on a keycap is
+  measuring nothing; use `.clay-chip` or `.clay-card`.
+- **Both themes come out of one recipe.** `--clay-lit` / `--clay-lit-solid` and `--clay-depth`
+  name the two directions so no rule spells a direction as `#ffffff` or `--clay-ink`, and
+  `--clay-fill-*` holds every hue-derived percentage because dark has to move all of them.
+  A new rule reads those tokens; it does not get a `.dark` override. Section 15.4 is the list
+  of elements that genuinely differ, and each one says why.
+- **In dark, a hue-derived fill has to clear a dead band.** `color-mix(hue N%, surface)` runs
+  from the surface to the pastel, and across the middle of that line — mint 36–92%, butter
+  34–84% — no ink in the system reaches 4.5:1. Put a new fill decisively above the band (take
+  `--clay-hue-ink`) or below it (take `--clay-hue-lit`), and measure it. Anything that sets
+  `--clay-hue-ink` must set `--clay-hue-lit` beside it.
+- **`color-mix` with `transparent` belongs `in srgb`.** It is only applying an alpha, and the
+  two spaces agree on the value but not on the storage: oklab keeps white as
+  `oklab(0.999994 …)` and quantises one 8-bit level low at the edge of a blur. Mixes between
+  two real colours stay `in oklab`.
+- **Tailwind utilities lose to the clay classes, and so does a second clay class.**
+  `app/globals.css` sits outside `@layer`, so `.clay-key`'s own `min-width` beats a `min-w-*`
+  utility at equal specificity. To change a clay element's geometry from a component, use the
+  important modifier (`min-w-[15rem]!`). The same order decides class against class: a
+  component class declared later in the file — `.clay-editor` — beats an elevation class
+  declared earlier — `.clay-hero` — so composing the two does nothing. Reach for the two
+  tokens the elevation class pairs (`--r-hero` with `--clay-shadow-hero`) in an inline style
+  rather than hardcoding a shadow; the pairing is the rule, the class is only one way to get
+  it.
+
+## The editor and the engine
+
+- **`evaluateGoal` must never see the learner's keys.** `EditorSnapshot` carries no key history
+  for exactly that reason: `dw`, `de` and `vex` are all correct if the resulting state matches.
+  Keystroke counts feed the efficiency score and nothing else. The `never` check at the bottom
+  of the switch makes a new `Goal` variant a build error rather than one that silently never
+  passes.
+- **`lib/engine/vim-bridge.ts` is value-import poison outside `components/editor/`.** It imports
+  `@replit/codemirror-vim`, so one value import drags ~240 kB into that route's first load —
+  silently, because the page still works. Page components type-import from
+  `lib/engine/types.ts`; values arrive through `onReady(bridge)`.
+- **Everything `vim-bridge.ts` does oddly, it does because the alternative was measured
+  failing.** The reasons are in the comments, each one written from a measurement against a
+  real browser rather than from a guess. The short list: keystrokes are counted from a capture listener on `view.dom` and never
+  `contentDOM`; `pendingKeys` comes from `vim.status`, not `inputState.keyBuffer`; the
+  `Esc` `Esc` hatch is decided in that listener because no keymap can run before vim; setup keys
+  are replayed programmatically so they never reach the DOM and cannot be counted.
+- **The package styles the block cursor at `Prec.highest` and copies the character's colour onto
+  it as an inline style.** Every cursor declaration in `components/editor/theme.ts` therefore
+  needs `!important`; without it the cursor is coral in every mode and the character under it is
+  unreadable at 1.49:1.
+- **A wasted key is one that _completes_ a command that changed nothing.** The naive reading
+  scores a flawless `dw` at 50% accuracy. Do not simplify it back.
+
+## Checks
+
+- **`scripts/node-test-resolver.mjs` is what lets Node run the real modules.** It maps `./x` to
+  `./x.ts`, a directory to its `index.ts`, and tsconfig's `@/` alias to the repo root, so a
+  test may import `content/lessons/index.ts` or a module that reaches `@/lib/progress` without
+  adding `tsx` or `ts-node`.
+
+## Maintaining this file
+
+Keep this file for knowledge useful to almost every future agent session in this project.
+Do not repeat what the codebase already shows; point to the authoritative file or command instead.
+Prefer rewriting or pruning existing entries over appending new ones.
+When updating this file, preserve this bar for all agents and keep entries concise.
