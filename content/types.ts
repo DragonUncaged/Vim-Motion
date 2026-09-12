@@ -2,7 +2,7 @@ export type LessonLanguage = 'text' | 'tsx' | 'go' | 'cpp';
 
 export type ClayHue = 'violet' | 'blue' | 'mint' | 'butter' | 'coral';
 
-export type ModuleId = 'basics';
+export type ModuleId = 'basics' | 'operators';
 
 /** Zero-based line, zero-based character offset within that line. */
 export interface Pos {
