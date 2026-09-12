@@ -13,3 +13,18 @@ export {
   mean,
   type Streaks,
 } from './metrics';
+
+export {
+  MASTERY_WINDOW,
+  EFFICIENCY_WEIGHT,
+  ACCURACY_WEIGHT,
+  OVER_PAR_PENALTY,
+  MASTERED_AT,
+  UNPRACTISED_WEIGHT,
+  scoreAttempt,
+  motionMastery,
+  motionAttemptCounts,
+  weaknessWeight,
+  weakestMotions,
+  type MotionMastery,
+} from './mastery';
