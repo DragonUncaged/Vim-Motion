@@ -9,6 +9,8 @@ import { lesson as search } from './search';
 import { lesson as textObjects } from './text-objects';
 import { lesson as visualModes } from './visual-modes';
 import { lesson as undoRepeat } from './undo-repeat';
+import { lesson as marks } from './marks';
+import { lesson as macros } from './macros';
 
 export const lessons: Lesson[] = [
   deleteLesson,
@@ -21,4 +23,6 @@ export const lessons: Lesson[] = [
   textObjects,
   visualModes,
   undoRepeat,
+  marks,
+  macros,
 ];
