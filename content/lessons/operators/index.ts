@@ -5,5 +5,16 @@ import { lesson as yankPut } from './yank-put';
 import { lesson as counts } from './counts';
 import { lesson as jumps } from './jumps';
 import { lesson as scrolling } from './scrolling';
+import { lesson as search } from './search';
+import { lesson as textObjects } from './text-objects';
 
-export const lessons: Lesson[] = [deleteLesson, change, yankPut, counts, jumps, scrolling];
+export const lessons: Lesson[] = [
+  deleteLesson,
+  change,
+  yankPut,
+  counts,
+  jumps,
+  scrolling,
+  search,
+  textObjects,
+];
