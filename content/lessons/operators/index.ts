@@ -7,6 +7,8 @@ import { lesson as jumps } from './jumps';
 import { lesson as scrolling } from './scrolling';
 import { lesson as search } from './search';
 import { lesson as textObjects } from './text-objects';
+import { lesson as visualModes } from './visual-modes';
+import { lesson as undoRepeat } from './undo-repeat';
 
 export const lessons: Lesson[] = [
   deleteLesson,
@@ -17,4 +19,6 @@ export const lessons: Lesson[] = [
   scrolling,
   search,
   textObjects,
+  visualModes,
+  undoRepeat,
 ];
