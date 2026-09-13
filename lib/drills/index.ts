@@ -32,7 +32,15 @@ export {
   lastSeenByExercise,
   type PlanInput,
 } from './plan';
+export { personalBest, bestsByExercise, keysPlayed, type PersonalBest } from './bests';
 export { categoryOverviews, type CategoryOverview } from './overview';
+export {
+  parseDrillSegment,
+  drillHref,
+  speedrunHref,
+  SPEEDRUN_PREFIX,
+  type DrillRoute,
+} from './route';
 export { mulberry32, newSeed } from './rng';
 export type {
   CategoryKind,
