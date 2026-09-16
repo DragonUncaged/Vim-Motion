@@ -1,3 +1,6 @@
+// drillPool is not exported here: it imports content/lessons and would put every lesson body in a client bundle.
+export { itemByKey } from './lookup';
+export { loadDrillItems, exercisesLoaded } from './exercises';
 export { categories, categoryById, itemsFor, motionsFor, WEAKEST } from './categories';
 export {
   isFindMotion,
