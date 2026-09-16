@@ -57,6 +57,9 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
   tokens the elevation class pairs (`--r-hero` with `--clay-shadow-hero`) in an inline style
   rather than hardcoding a shadow; the pairing is the rule, the class is only one way to get
   it.
+- **The mastery formula is written down once**, at the top of `lib/stats/mastery.ts`.
+  `motionMastery` / `weaknessWeight` exist nowhere else, and `lib/drills` reads them from there;
+  a second copy would drift and the heatmap would disagree with the drill that claims to fix it.
 
 ## The editor and the engine
 
@@ -81,6 +84,12 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
   unreadable at 1.49:1.
 - **A wasted key is one that _completes_ a command that changed nothing.** The naive reading
   scores a flawless `dw` at 50% accuracy. Do not simplify it back.
+
+## Practice: the sampler and the run
+
+- **The sampler is pure and seeded** (`lib/drills/sample.ts`, `mulberry32`), so a run can be
+  reproduced and checked. Weight is mean weakness × recency, damped for lesson siblings after
+  each pick. Never practised is `null`, never `0`.
 
 ## Checks
 
