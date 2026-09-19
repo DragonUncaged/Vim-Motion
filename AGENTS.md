@@ -14,6 +14,11 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
 - **`content/types.ts` is the contract ~135 hand-written exercises are typed against.** One
   renamed field breaks all of them. Treat it as published API: raise the change, do not make it
   quietly. `content/modules.ts` and `content/lessons/index.ts` are the same.
+- **It is also where a shared token is declared, because `content/` imports nothing.**
+  `ClayHue` and `ModuleId` live there and are re-exported where components reach for them
+  (`components/clay/Key.tsx`). Both used to be `string` or a copied literal union in two or
+  three places at once, bridged by a cast. A new token that both `lib/` and `components/`
+  need goes here rather than into whichever component happened to name it first.
 - **`ModuleId` is what makes wiring a module a compile-time job.** The barrel map in
   `content/lessons/index.ts` is `Record<ModuleId, Lesson[]>`, so a module in the union with
   no barrel line does not compile and a barrel line for an id nobody declared does not
@@ -57,6 +62,44 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
   tokens the elevation class pairs (`--r-hero` with `--clay-shadow-hero`) in an inline style
   rather than hardcoding a shadow; the pairing is the rule, the class is only one way to get
   it.
+- **The three faces are committed under `app/fonts/`, so `next build` needs no network.**
+  `next/font/google` fetches at build time and a production build re-throws on failure, which
+  made every build depend on Google being reachable. The files are the latin subsets Google
+  itself served; `app/fonts/README.md` has the provenance, the licences and how to take a
+  newer version. Latin alone is deliberate — the handful of glyphs the site paints outside
+  that range (→ ≥ ● ✓) are in no Google subset either and always came from the system stack.
+- **Moving a family between the two font loaders moves the fallback face.** `next/font/google`
+  reads `size-adjust` from a precalculated table; `next/font/local` computes it with fontkit
+  from the file, and Next's own source says the table should go. The numbers differ by a few
+  percent, and it is not only a pre-swap flash: a glyph the webfont lacks is painted by the
+  `<family> Fallback` face permanently. Expect a sub-pixel reflow around such glyphs, and
+  measure rather than assume the loaded text moved — it does not.
+- **The theme is two states, dark by default, and deliberately not part of the progress
+  schema.** `lib/theme` owns it under its own key, because progress travels between devices
+  through export/import and a theme is a property of the device you are sitting at. Dark is
+  the default for a visitor with nothing stored — the captain's call, not the OS preference;
+  a stored `system` from the old three-state design reads as dark. It must also be stamped
+  onto `<html>` by the inline blocking script in `app/layout.tsx` — an external script, a
+  provider or a `useEffect` all paint first, and the whole page in the wrong theme for a
+  frame is the one bug a theme switch is judged on. That script cannot import from
+  `lib/theme`, so `lib/theme/__tests__` executes it and asserts the two agree; nothing else
+  would catch the drift.
+- **`lib/progress` owns the storage schema; `lib/stats` owns the maths.** Every loader path
+  tolerates SSR, disabled storage, a full quota and malformed JSON by degrading to "no progress
+  yet" — never by throwing. Finite is not sane: the schema bounds every field (`at` inside the
+  JS date range, strings, motion lists and counters capped), and every formatter in
+  `lib/stats/format.ts` still guards its input, because a stored value that one formatter
+  cannot digest takes a page down on every visit. `lib/storage.ts` owns getting at `localStorage` at all —
+  `safeStorage()` for the access, `storageWritable()` for the probe — and both the progress
+  store and the sandbox's prefs use it. `safeStorage()` does not probe-write: at exactly quota
+  the probe was the write that failed, ahead of the halving fallback. Only a caller that has
+  to answer "would a write work?" ahead of time adds the probe. `useProgress` invalidates its snapshot cache at module level,
+  not only from mounted subscribers, so `app/error.tsx` clearing storage after a crashed page
+  unmounted is seen by the retry.
+- **`app/error.tsx` is the only error boundary and must never format stored data.** It is
+  the page a learner lands on when a formatter over stored attempts throws, so it reads and
+  serialises (`loadProgress`, `exportProgress`) and nothing else; the message and digest are
+  printed locally — there is no error tracker and there must never be one.
 - **The mastery formula is written down once**, at the top of `lib/stats/mastery.ts`.
   `motionMastery` / `weaknessWeight` exist nowhere else, and `lib/drills` reads them from there;
   a second copy would drift and the heatmap would disagree with the drill that claims to fix it.
@@ -91,12 +134,23 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
   reproduced and checked. Weight is mean weakness × recency, damped for lesson siblings after
   each pick. Never practised is `null`, never `0`.
 
+## Findability
+
+- **Metadata is shallowly merged, so a page that declares `openGraph` replaces the layout's
+  whole object.** Setting only `openGraph.title` silently drops `og:site_name`, `og:type`
+  and the image — which is why every route builds the complete object through
+  `pageMetadata` and nothing hand-writes a partial one. The title template does not reach
+  Open Graph either: `og:title` is spelled out with the suffix, and `/` passes `shareTitle`
+  because the template does not apply to the page beside the layout that declares it.
+
 ## Checks
 
 - **`scripts/node-test-resolver.mjs` is what lets Node run the real modules.** It maps `./x` to
   `./x.ts`, a directory to its `index.ts`, and tsconfig's `@/` alias to the repo root, so a
   test may import `content/lessons/index.ts` or a module that reaches `@/lib/progress` without
   adding `tsx` or `ts-node`.
+- **Never run `npm run build` while `npm run dev` is up**: the build replaces `.next` underneath
+  the dev server and every subsequent request 500s on a missing vendor chunk.
 
 ## Maintaining this file
 
