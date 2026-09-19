@@ -2,12 +2,14 @@ import type { Lesson, LessonCard, Module, ModuleId } from '../types';
 import { modules } from '../modules';
 import { lessons as basicsLessons } from './basics';
 import { lessons as operatorsLessons } from './operators';
+import { lessons as reactTsxLessons } from './react-tsx';
 
 const inOrder = (lessons: Lesson[]): Lesson[] => [...lessons].sort((a, b) => a.order - b.order);
 
 export const lessonsByModule: Record<ModuleId, Lesson[]> = {
   basics: inOrder(basicsLessons),
   operators: inOrder(operatorsLessons),
+  'react-tsx': inOrder(reactTsxLessons),
 };
 
 const orderedModules: Module[] = [...modules].sort((a, b) => a.order - b.order);

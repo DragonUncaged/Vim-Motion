@@ -15,4 +15,11 @@ export const modules: Module[] = [
     blurb: 'Verb plus noun. Learn the grammar once.',
     accent: 'violet',
   },
+  {
+    id: 'react-tsx',
+    name: 'React + TypeScript',
+    order: 3,
+    blurb: 'Real .tsx files: props, hooks and JSX.',
+    accent: 'mint',
+  },
 ];
