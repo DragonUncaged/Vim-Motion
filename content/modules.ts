@@ -22,4 +22,11 @@ export const modules: Module[] = [
     blurb: 'Real .tsx files: props, hooks and JSX.',
     accent: 'mint',
   },
+  {
+    id: 'go',
+    name: 'Go',
+    order: 4,
+    blurb: 'Structs, error returns and tab-indented blocks.',
+    accent: 'butter',
+  },
 ];

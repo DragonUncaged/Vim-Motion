@@ -2,7 +2,7 @@ export type LessonLanguage = 'text' | 'tsx' | 'go' | 'cpp';
 
 export type ClayHue = 'violet' | 'blue' | 'mint' | 'butter' | 'coral';
 
-export type ModuleId = 'basics' | 'operators' | 'react-tsx';
+export type ModuleId = 'basics' | 'operators' | 'react-tsx' | 'go';
 
 /** Zero-based line, zero-based character offset within that line. */
 export interface Pos {
