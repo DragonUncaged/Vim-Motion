@@ -29,4 +29,11 @@ export const modules: Module[] = [
     blurb: 'Structs, error returns and tab-indented blocks.',
     accent: 'butter',
   },
+  {
+    id: 'cpp',
+    name: 'C++',
+    order: 5,
+    blurb: 'Templates, namespaces, and deep nesting.',
+    accent: 'coral',
+  },
 ];
