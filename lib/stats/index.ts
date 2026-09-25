@@ -34,6 +34,17 @@ export { SESSION_GAP_MS, sessions, type Session } from './sessions';
 export { summarise, type StatsSummary } from './summary';
 
 export {
+  KEYBOARD_ROWS,
+  ALL_CAPS,
+  motionKeys,
+  motionCaps,
+  capForKey,
+  capHeat,
+  type KeyCap,
+  type CapHeat,
+} from './keyboard';
+
+export {
   curriculumProgress,
   curriculumMotions,
   lessonsForMotion,
