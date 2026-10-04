@@ -27,6 +27,19 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
 - **`content/lessons/index.ts` asserts at import time** that slugs are unique and each module's
   `order` is dense and 1-based, so a duplicate slug fails `next build` rather than 404ing
   quietly at runtime.
+- **`lib/drills/pool.ts` is server-side, and importing `catalogue` does not make a module
+  client-safe.** The catalogue is _derived at runtime_ from the real lessons, so any client
+  module that imports it still bundles all 135 bodies — /learn, /stats and /cheatsheet only
+  escape that because they are server components passing serialised props. So the drill pool
+  is built on the server, is deliberately absent from `lib/drills/index.ts` (a barrel export
+  would put it back in the client graph), and every consumer — `itemsFor`, `planFor`,
+  `categoryOverviews`, `itemByKey` — takes the pool as an argument. A `DrillItem` is a card;
+  `LoadedDrillItem` is one with its `Exercise` attached, fetched by `lib/drills/exercises.ts`
+  when a run is about to play it. The whole 135-card pool is 2.9 kB gzipped as props.
+- **`content/cheatsheet.ts` names motions, never lesson slugs.**
+  `components/cheatsheet/lessonLinks` builds the motion-to-lesson index from `content/lessons`,
+  so a module landing later wires itself in. `motionFamily` there folds `dt,` and `t>` onto the
+  `dt` and `t` rows — a presentation concern, and the only reason it is not pure `lib/stats`.
 
 ## Layout that is not obvious from the tree
 
@@ -53,6 +66,16 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
   two spaces agree on the value but not on the storage: oklab keeps white as
   `oklab(0.999994 …)` and quantises one 8-bit level low at the edge of a blur. Mixes between
   two real colours stay `in oklab`.
+- **Route files stay thin: a `metadata` export, params handling, and one component from
+  `components/`.** "Written once and never edited" was the ownership rule while ten branches
+  built the site in parallel; that build is over. Edit a route file when the route's own
+  contract changes — `generateStaticParams`, `dynamicParams`, metadata — and put everything
+  else in the component. Both dynamic routes set `dynamicParams = false`, so an unknown
+  lesson or drill is the prerendered 404 and `next build` shows no `ƒ` route; a new
+  practice mode must be enumerated in `app/practice/[drill]/page.tsx` or it does not exist.
+  The one second component allowed beside the first is `<JsonLd>` on `/`, `/learn` and
+  `/learn/[slug]`: structured data is the route's own metadata and Next's `metadata` export
+  cannot carry it.
 - **Tailwind utilities lose to the clay classes, and so does a second clay class.**
   `app/globals.css` sits outside `@layer`, so `.clay-key`'s own `min-width` beats a `min-w-*`
   utility at equal specificity. To change a clay element's geometry from a component, use the
@@ -111,6 +134,23 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
   Keystroke counts feed the efficiency score and nothing else. The `never` check at the bottom
   of the switch makes a new `Goal` variant a build error rather than one that silently never
   passes.
+- **"Focused" means focus anywhere inside `view.dom`, panels included.** Vim's `/`, `?` and
+  `:` command line is a real `<input>` CodeMirror mounts inside the editor, so watching
+  `contentDOM` for blur (what `EditorView.domEventHandlers` does) reported the editor
+  abandoned every time a learner opened a search — and raised the "click to focus" card over
+  the buffer they were searching. `VimEditor` tracks `focusin`/`focusout` on `view.dom`
+  instead and reads `relatedTarget`, because `document.activeElement` is `<body>` for the
+  duration of a focusout. It stops at `view.dom` on purpose: the clay frame's title strip
+  holds the full-screen button, and focus there really is outside the buffer.
+- **The attempt clock runs only while the editor has focus, and `runningSince` is an
+  ORIGIN.** `startedAt + pausedMs`, pushed forward by every away spell, so a display is
+  still one subtraction from `performance.now()` and `accumulatedMs` is the reading
+  whenever it is null (idle, paused, ended). The model and the two transitions are at the
+  top of `lib/engine/attempt.ts`. Two consequences worth knowing: stored `timeMs` means
+  time actually spent, so a record written before this can only be longer than the same run
+  today; and ghost offsets are recorded key by key on the attempt clock, because past one
+  pause no single offset converts `KeystrokeRecord.at` stamps. The ghost pauses with the
+  clock — `GhostReplay` freezes at `accumulatedMs`.
 - **`lib/engine/vim-bridge.ts` is value-import poison outside `components/editor/`.** It imports
   `@replit/codemirror-vim`, so one value import drags ~240 kB into that route's first load —
   silently, because the page still works. Page components type-import from
@@ -125,14 +165,53 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
   it as an inline style.** Every cursor declaration in `components/editor/theme.ts` therefore
   needs `!important`; without it the cursor is coral in every mode and the character under it is
   unreadable at 1.49:1.
+- **The editor frame takes its height from the document it was given, never the live one.**
+  `wellHeightFor` in `components/editor/VimEditor.tsx` fixes `.clay-editor-well` from the
+  initial line count (clamped to the old 9rem–28rem band) and the CodeMirror root fills it,
+  so thirty new lines scroll behind the frame the way a vim window scrolls. It used to be
+  `min-h` plus a CodeMirror `max-height`, and the hero doubled in height as a visitor typed.
+  The key strip under the status bar is one fixed row for the same reason.
+- **The attempt clock ticks in the leaf that paints it, not in the hook.**
+  `AttemptState.elapsedMs` is 0 while an attempt is running and the real duration once it
+  ends; `runningSince` is the `performance.now()` of the first keystroke. A display reads
+  `useLiveElapsed` / `<LiveDuration>` from `components/LiveDuration.tsx`, which owns the
+  100 ms interval — two callers, the lesson runner's time stat and `GhostRace`. The counter
+  used to live in `useExercise`'s state, which re-rendered the editor and its fourteen
+  keycaps ten times a second for the whole attempt. `VimEditor` is memoised for the same
+  reason; every prop it takes is already referentially stable, so keep it that way (no
+  inline object or `footer` built in a parent's render). An event handler that needs the
+  time between renders takes `elapsedNow()` from the hook.
+- **Registers are global to the module, not the editor**, and outlive `view.destroy()`. Every
+  attempt clears them, and the goal is only evaluated after the first keystroke, so a `register`
+  goal cannot read true at mount.
 - **A wasted key is one that _completes_ a command that changed nothing.** The naive reading
   scores a flawless `dw` at 50% accuracy. Do not simplify it back.
+- **`EditorSnapshot.pendingKeys` is a display string, not a key list.** It is vim's own showcmd
+  buffer with the register prefix re-attached, so `"a2y` arrives as one string with the count
+  and the register still inside it. Anything reading it has to parse it —
+  `components/sandbox/resolve.ts` does, with the two rules that bite: `0` is a motion until a
+  count is already being typed, and `f`/`r`/`m` swallow the next character whole.
 
 ## Practice: the sampler and the run
 
 - **The sampler is pure and seeded** (`lib/drills/sample.ts`, `mulberry32`), so a run can be
   reproduced and checked. Weight is mean weakness × recency, damped for lesson siblings after
   each pick. Never practised is `null`, never `0`.
+- **`DrillCategory.matches` and `.coversMotion` answer different questions.** An exercise joins
+  "word motions" for training `dw`; the `<Esc>` it also trains is not part of that category's
+  coverage or of the mastery number its card prints.
+- **A speedrun's personal best is a `min` over stored attempts**, not a second storage key. That
+  is why imported progress brings its ghosts with it, and why "Run it again" must re-run the
+  _same_ item rather than re-rolling the picker — re-rolling made the ghost unreachable. The
+  keys the ghost replays obey the same rule: `AttemptRecord.timeline` is a field on the run that
+  set the record, so the bar and the replay cannot describe two different runs. Which runs keep
+  one, and why it is the only field on a record that is not write-once, is on
+  `applyTimelinePolicy` in `lib/progress/storage.ts`.
+- **`ExerciseStage` reports; the run decides.** `onFinished` fires the instant an attempt ends;
+  whether that means a puff and the next exercise or a button is the run's policy. Reading the
+  result off parent state inside `renderFinished` is a frame behind — use the argument.
+- **A skipped exercise records no attempt.** An unsolved attempt scores 0 for every motion it
+  lists, so recording skips would let a learner flatten their own mastery by clicking.
 
 ## Findability
 
@@ -142,6 +221,9 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
   `pageMetadata` and nothing hand-writes a partial one. The title template does not reach
   Open Graph either: `og:title` is spelled out with the suffix, and `/` passes `shareTitle`
   because the template does not apply to the page beside the layout that declares it.
+- **The 135 per-exercise speedrun pages are `noindex, follow`** — the same page with a
+  different exercise loaded after hydration. `app/sitemap.ts` already leaves them out; the
+  meta says the same thing to a crawler that arrived by following a link.
 
 ## Checks
 
