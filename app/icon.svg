@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Vim Clay">
+  <defs>
+    <linearGradient id="body-a" x1="0" y1="0" x2="0" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8b7df2"/>
+      <stop offset="0.45" stop-color="#7263ea"/>
+      <stop offset="1" stop-color="#5b47d6"/>
+    </linearGradient>
+    <radialGradient id="crown-a" cx="16" cy="8" r="15" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 0.6 0 3.2)">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="foot-a" x1="0" y1="23" x2="0" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#34277f" stop-opacity="0"/>
+      <stop offset="1" stop-color="#34277f" stop-opacity="0.45"/>
+    </linearGradient>
+    <linearGradient id="edge-a" x1="0" y1="0" x2="0" y2="2" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <g>
+    <rect x="0" y="0" width="32" height="32" rx="7" fill="url(#body-a)"/>
+    <rect x="0" y="0" width="32" height="32" rx="7" fill="url(#crown-a)"/>
+    <rect x="0" y="0" width="32" height="32" rx="7" fill="url(#foot-a)"/>
+    <rect x="0" y="0" width="32" height="32" rx="7" fill="url(#edge-a)"/>
+    <rect x="12" y="10" width="8" height="12" rx="1.5" fill="#f5f4ff"/>
+  </g>
+</svg>
