@@ -1,0 +1,17 @@
+# Keep in sync with .prettierrc.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+max_line_length = 100
+
+[*.md]
+# Markdown gives meaning to two trailing spaces.
+trim_trailing_whitespace = false
+
+# No tab override for content/lessons/go/source.ts: its tabs are \t escapes, not tab characters.

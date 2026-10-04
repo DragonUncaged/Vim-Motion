@@ -9,6 +9,8 @@
     "build": "next build",
     "start": "next start",
     "test": "node scripts/test.mjs",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "icons": "node scripts/generate-icons.mjs"
   },
   "dependencies": {
