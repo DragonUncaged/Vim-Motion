@@ -1,0 +1,9 @@
+#!/bin/sh
+# Opt in with: git config core.hooksPath .githooks
+set -e
+
+staged=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(ts|tsx|mjs|js|json|css|md)$' || true)
+[ -z "$staged" ] && exit 0
+
+echo "$staged" | xargs npx prettier --write --ignore-unknown
+echo "$staged" | xargs git add
