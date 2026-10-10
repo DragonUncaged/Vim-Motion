@@ -111,6 +111,37 @@ Two rules the codebase actually depends on, both explained where they live:
   that is a criterion, not a preference. `components/landing/HeroEditorMount` is the only thing
   on `/` that can reach CodeMirror, behind `dynamic(..., { ssr: false })`.
 
+## Forking it
+
+Nine places carry anything that is "this deployment" rather than "this project". Change
+these and it is yours:
+
+1. **`lib/site.ts`** — `SITE_URL` and `REPO_URL`. Both are **empty strings on purpose**: this
+   repository has no public home and no domain yet, and neither can be derived from a
+   checkout. Every consumer already renders correctly with an empty value — the layout omits
+   `metadataBase`, the canonical link and `og:url`; `robots.ts` omits the `Sitemap:` line,
+   which is meaningless unless absolute; `sitemap.ts` emits root-relative URLs that become
+   absolute the moment you fill this in; and `/about` hides its three source buttons rather
+   than linking to a 404. Set the origin with no trailing slash, and the repository page;
+   `LICENSE_URL` and `LESSONS_URL` follow from `REPO_URL` on their own.
+2. **`package.json`** — `name`, `description`, and a `repository` field once you have a URL.
+3. **`app/layout.tsx`** — the site title and description in `metadata`.
+4. **`app/manifest.ts`** — the installed-app name, short name and theme colour.
+5. **`scripts/generate-icons.mjs`** — the geometry and palette are the first thing in the
+   file. Change them, run `npm run icons`, and every icon plus the two proof sheets in
+   `docs/icons/` are rewritten. Never hand-edit the SVG or the binaries.
+6. **`app/globals.css`** — the palette, in section 2, and the dark tokens in section 15.
+   Change tokens, not component rules; if a new value derives from `--clay-hue` it belongs on
+   the `*, ::before, ::after` block in section 5, and `AGENTS.md` explains why.
+7. **`content/modules.ts` and `content/lessons/`** — the curriculum. Delete a module by
+   dropping its folder and its entry; the registry asserts the rest at import time.
+8. **`content/cheatsheet.ts`** — the reference, if you change the curriculum under it.
+9. **`components/about/About.tsx`** — the "why this is free" case is written in this
+   project's own voice. Say it in yours, or say something else.
+
+The one thing not to change: there is no sign-in, no account and no backend anywhere in here,
+and no configuration that could add one. That is the whole point of the project.
+
 ## Licence
 
 MIT. See [LICENSE](LICENSE). Fork it, host it, teach with it.
