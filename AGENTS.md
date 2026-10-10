@@ -1,7 +1,7 @@
 # Project agent memory
 
-Vim Clay is a static, account-free site for learning vim motions. This file is only what
-the tree does not show.
+Vim Clay is a static, account-free site for learning vim motions. `README.md` is the
+orientation; this file is only what it does not say and the tree does not show.
 
 ## The rule that overrides everything
 
@@ -36,10 +36,35 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
   `categoryOverviews`, `itemByKey` — takes the pool as an argument. A `DrillItem` is a card;
   `LoadedDrillItem` is one with its `Exercise` attached, fetched by `lib/drills/exercises.ts`
   when a run is about to play it. The whole 135-card pool is 2.9 kB gzipped as props.
+- **A page that only lists lessons takes the catalogue, never the registry.** `catalogue` /
+  `catalogueByModule` in `content/lessons/index.ts` are `allLessons` with the teaching material
+  dropped — `LessonCard` and `ExerciseCard` in `content/types.ts`, i.e. an exercise reduced to
+  `id` and `motions`. A client component that value-imports `@/content/lessons` puts all 135
+  exercises (29 kB gz) into that route's first load; the server page passes the catalogue down
+  instead. `Lesson` is deliberately assignable to `LessonCard`, which is why `lib/stats`
+  functions take the card — and also why returning the lessons unchanged would type-check and
+  silently undo the whole thing, so `content/lessons/__tests__/catalogue.test.ts` asserts field
+  by field that nothing heavier survives. Anything that _runs_ an exercise takes `Lesson`.
+- **`npm run verify` replays every exercise's `solution` through the real editor** and asserts
+  `evaluateGoal` is true — see `scripts/verify-exercises.ts`. The jsdom DOM, its synthetic
+  geometry and the editor it mounts live in `scripts/jsdom-editor.ts` (its header explains
+  the shim); `lib/engine/__tests__/vim-bridge.test.ts` mounts the same stack and drives the
+  bridge with trusted keydowns through jsdom's internal `fireAnEvent`, because `feedKeys`
+  never reaches the capture listener and public `dispatchEvent` cannot make a trusted event.
+  When the replay fails, fix the exercise, never the assertion.
 - **`content/cheatsheet.ts` names motions, never lesson slugs.**
   `components/cheatsheet/lessonLinks` builds the motion-to-lesson index from `content/lessons`,
   so a module landing later wires itself in. `motionFamily` there folds `dt,` and `t>` onto the
   `dt` and `t` rows — a presentation concern, and the only reason it is not pure `lib/stats`.
+- **The prose conventions are settled, and a sweep of all ~850 visible strings found them
+  consistent.** The editor is written lowercase — `vim` mid-sentence, `Vim` only where a
+  sentence starts; British spelling throughout (`serialised`, `flavours`, `centred`,
+  `practise` the verb against `practice` the noun); straight quotes and apostrophes in
+  content strings, so an apostrophe switches that literal to double quotes and Prettier
+  settles which. JSX prose is the one exception: `react/no-unescaped-entities` forbids a
+  bare `"` in a text child, which is why `Landing.tsx` carries the only curly quotes in the
+  tree. A cheatsheet `desc` is lowercase with no full stop; every `blurb`, `note`, `summary`,
+  `prompt` and `hint` ends in one, and a `heading` never does.
 
 ## Layout that is not obvious from the tree
 
@@ -97,6 +122,9 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
   percent, and it is not only a pre-swap flash: a glyph the webfont lacks is painted by the
   `<family> Fallback` face permanently. Expect a sub-pixel reflow around such glyphs, and
   measure rather than assume the loaded text moved — it does not.
+- **Do not stack an opacity utility on `.clay-secondary`.** `--clay-ink-soft` is tuned to clear
+  AA on the three neutral grounds exactly as it is; an 80% multiplier drops it to 3.8:1. Two
+  separate places had done it and both failed Lighthouse.
 - **The theme is two states, dark by default, and deliberately not part of the progress
   schema.** `lib/theme` owns it under its own key, because progress travels between devices
   through export/import and a theme is a property of the device you are sitting at. Dark is
@@ -134,6 +162,14 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
   Keystroke counts feed the efficiency score and nothing else. The `never` check at the bottom
   of the switch makes a new `Goal` variant a build error rather than one that silently never
   passes.
+- **A syntax mode is fetched per lesson, not bundled.** `components/editor/languages.ts` holds
+  one literal `import()` per `@codemirror/lang-*` so webpack emits a chunk each; `VimEditor`
+  keeps the mode in a `Compartment`, mounts with `cachedLanguage()` (synchronous, so a remount
+  into a mode already fetched does not flash plain) and reconfigures when the chunk lands.
+  Bundling all three cost ~88 kB gz on every editor route while 24 of 40 lessons and the hero
+  are `language: 'text'`. Add a language by adding a loader — the `Record` keyed on
+  `Exclude<LessonLanguage, 'text'>` is the exhaustiveness check — and `scripts/jsdom-editor.ts`
+  preloads the same map, so the replay cannot highlight a mode the editor no longer knows.
 - **"Focused" means focus anywhere inside `view.dom`, panels included.** Vim's `/`, `?` and
   `:` command line is a real `<input>` CodeMirror mounts inside the editor, so watching
   `contentDOM` for blur (what `EditorView.domEventHandlers` does) reported the editor
@@ -161,6 +197,18 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
   `contentDOM`; `pendingKeys` comes from `vim.status`, not `inputState.keyBuffer`; the
   `Esc` `Esc` hatch is decided in that listener because no keymap can run before vim; setup keys
   are replayed programmatically so they never reach the DOM and cannot be counted.
+- **Never call `Vim.unmap()`.** It splices the package's `defaultKeymap` without adjusting its
+  captured length, and afterwards every key that arrives through a `keyToKey` expansion throws:
+  `s`, `S`, all four arrows, `<Space>`, `<BS>`, `<Del>`, `<CR>`, `<Home>`, `<End>`, `<C-n>`,
+  `<C-p>`. `Vim.noremap()` and `Vim.mapCommand()` are safe — they unshift. The full note is on
+  `configureVimGlobals` in `vim-bridge.ts`, and `npm run verify` replays those keys by name so
+  the bug cannot come back.
+- **Four extensions are load-bearing and two of them fail silently.** `history()` — without it
+  `u` and `<C-r>` are no-ops and an undo exercise passes for the wrong reason.
+  `EditorState.allowMultipleSelections.of(true)` — without it `<C-v>` reports a healthy block
+  while CodeMirror collapses to one line. And `defaultKeymap`/`basicSetup` must stay **out**: on
+  macOS they bind emacs keys and `Ctrl-k` wipes to end of line in insert mode. A lint rule
+  enforces the last one.
 - **The package styles the block cursor at `Prec.highest` and copies the character's colour onto
   it as an inline style.** Every cursor declaration in `components/editor/theme.ts` therefore
   needs `!important`; without it the cursor is coral in every mode and the character under it is
@@ -227,12 +275,58 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
 
 ## Checks
 
+- **Watch for a check that passes because it never ran.** `npm test` used to enumerate test
+  directories by hand and silently skipped `lib/stats/__tests__` — four files over the most
+  formula-heavy code in the project, while reporting green. `scripts/test.mjs` now walks the
+  whole tree for `__tests__` and refuses to pass with no files or a file that declares no
+  tests — Node counts such a file as one passing test, so `# tests 0` alone never fires.
 - **`scripts/node-test-resolver.mjs` is what lets Node run the real modules.** It maps `./x` to
   `./x.ts`, a directory to its `index.ts`, and tsconfig's `@/` alias to the repo root, so a
   test may import `content/lessons/index.ts` or a module that reaches `@/lib/progress` without
   adding `tsx` or `ts-node`.
+- **`noUncheckedIndexedAccess` is on, so an index says whether it found anything.** Do not
+  reach for `!` to get past it — say the invariant in a way the compiler can check (a
+  `Record` keyed by a union rather than by `string`, a named local before the guard that
+  already covers it, `charAt` in a character loop, `at(-1)` folded into the length check).
+  In a test, take `at()` / `get()` from `scripts/test-utils.ts`: they assert with the index
+  and the length in the message, where a `!` gives "Cannot read properties of undefined" at
+  a line that is not the one that cares. `no-unnecessary-condition` is deliberately still
+  off — 39 hits, mostly guards on `@replit/codemirror-vim` and jsdom values whose types are
+  more confident than the packages are.
+- **`./` for a sibling, `@/` for everything else, and `lib/` never imports `components/`.**
+  Both are `no-restricted-imports` in `eslint.config.mjs`, scoped per directory; a
+  `__tests__` file may still reach one level up to the module it tests. Move a type or a
+  pure function down rather than reaching up — `content/types.ts` for a token,
+  `lib/engine/types.ts` for the engine's contract, its own module under `lib/` otherwise
+  (that is why the prose parser is `lib/prose/richtext-parse.ts`). **A second
+  `no-restricted-imports` entry replaces the rule's options outright**, so the scoped blocks
+  compose through one `restrictedImports()` helper; adding a bare one would switch the
+  `defaultKeymap` and `codemirror` bans off for everything it covers, silently.
 - **Never run `npm run build` while `npm run dev` is up**: the build replaces `.next` underneath
   the dev server and every subsequent request 500s on a missing vendor chunk.
+- **Prettier is pinned to an exact version and ESLint 10 is flat-config only.** Do not widen
+  the pin, and there is no `.eslintrc` to add — ESLint 10 dropped the legacy format, so the
+  silent-no-op version of that bug is gone with it. `CLAUDE.md` is in `.prettierignore`
+  because its two-line pointer is byte-checked by tooling.
+- **Next is pinned to 15 deliberately** — `create-next-app` now defaults to 16. Package manager
+  is npm; the lockfile is committed. `eslint-config-next` is deliberately _not_ held back with
+  it: the 15 line caps its ESLint peer at 9, and it is a linter that shares no runtime with the
+  framework. Its 16 line also publishes flat config directly, which is why `FlatCompat` and
+  `@eslint/eslintrc` are gone.
+- **Three lint dependencies advertise a stale ESLint peer range and one genuinely breaks.**
+  `eslint-plugin-jsx-a11y`, `-import` and `-react` all cap at `^9` and all work under 10; the
+  `overrides` block in `package.json` says so once rather than every install warning about it.
+  The break is real but narrow: `eslint-plugin-react`'s `settings.react.version: 'detect'` is
+  the last caller of the removed `context.getFilename()`, so `eslint.config.mjs` names the
+  React version instead and every `react/*` rule loads.
+- **`eslint-plugin-react-hooks` 7 arrived with `eslint-config-next` 16 and its `recommended`
+  is now the React Compiler set.** Twelve of the fourteen new rules pass and are on.
+  `set-state-in-effect` and `refs` are off, with the reason and the remedy at the block that
+  disables them — adopting either is a change to the components, not to the lint config.
+- **CI has still never run on GitHub** — there is no remote. The substitute is both jobs,
+  step by step, in a fresh clone at a path that is not this one. Run them there and not in a
+  worktree, whose warm `node_modules` and warm `.next` hide exactly the failures CI exists to
+  catch.
 
 ## Maintaining this file
 
