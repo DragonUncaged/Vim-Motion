@@ -7,12 +7,15 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postbuild": "node scripts/csp-check.mjs",
     "start": "next start",
     "lint": "eslint .",
     "test": "node scripts/test.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "verify:exercises": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/node-test-resolver.mjs scripts/verify-exercises.ts",
+    "csp:hashes": "node scripts/csp-hashes.mjs",
+    "csp:check": "node scripts/csp-check.mjs",
     "icons": "node scripts/generate-icons.mjs",
     "verify": "npm run format:check && npm run lint && tsc --noEmit && npm test && npm run verify:exercises"
   },
