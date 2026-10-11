@@ -40,14 +40,23 @@ That is the whole setup. No `.env`, no database, no services to start.
 | Command                    | What it does                                                                                             |
 | -------------------------- | -------------------------------------------------------------------------------------------------------- |
 | `npm run dev`              | Development server                                                                                       |
-| `npm run build`            | Production build. Also the ESLint and TypeScript gate                                                    |
+| `npm run build`            | Production build, then the CSP check below. Also the ESLint and TypeScript gate                          |
 | `npm start`                | Serve the production build                                                                               |
 | `npm run verify`           | **The one command CI runs**: format check, lint, `tsc --noEmit`, unit tests, and every exercise replayed |
 | `npm run verify:exercises` | Just the exercise replay                                                                                 |
 | `npm test`                 | Unit tests only (`node:test`, via `scripts/test.mjs`)                                                    |
+| `npm run csp:hashes`       | Rewrite `csp-hashes.json` from the last build's output. See below                                        |
 | `npm run icons`            | Regenerate every icon and the two proof sheets in `docs/icons/` from one geometry                        |
 | `npm run format`           | Rewrite with Prettier                                                                                    |
 | `npm run lint`             | ESLint only                                                                                              |
+
+**If you changed a page, the build will tell you to re-run `npm run csp:hashes`.** The site
+serves a Content-Security-Policy with a SHA-256 hash for each inline script, per route, and
+those hashes are committed in `csp-hashes.json` because `next.config.ts` has to read them
+while it builds. Changing what a page renders changes its hashes. So: `npm run build`, and if
+the postbuild check fails, `npm run csp:hashes && npm run build` and commit the file.
+`next dev` is exempt — its own overlay scripts cannot be hashed ahead of time — so this only
+ever bites at build time.
 
 Don't run `npm run build` while `npm run dev` is up — the build replaces `.next` underneath
 the dev server and every later request 500s on a missing chunk.
@@ -63,6 +72,11 @@ Every route prerenders and there is no server-side state, so:
 There is nothing to configure — no environment variables, no build settings, no integrations.
 The same is true of Netlify, Cloudflare Pages, or any host that runs `next build` and serves
 the Next output.
+
+One thing to know if you drop the built HTML on a bare static file host instead: the security
+headers and the Content-Security-Policy are declared in `next.config.ts`, and a plain file
+server never reads that. The pages still work; they just arrive without a CSP. Configure the
+same headers at your CDN if you go that way.
 
 ## How it is laid out
 
@@ -98,6 +112,8 @@ scripts/
   test.mjs             Finds every __tests__ directory and runs it with node:test.
   verify-exercises.ts  Replays all 135 solutions through the real editor.
   jsdom-editor.ts      The jsdom DOM and geometry shim that replay runs on.
+  csp-hashes.mjs       Rewrites csp-hashes.json from the build output.
+  csp-check.mjs        Runs after every build; fails it if that file is stale.
   generate-icons.mjs   Every icon, from one geometry.
   icons/             Proof sheets for the icon at 16px and under Android's mask.
 ```
