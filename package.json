@@ -17,6 +17,7 @@
     "csp:hashes": "node scripts/csp-hashes.mjs",
     "csp:check": "node scripts/csp-check.mjs",
     "icons": "node scripts/generate-icons.mjs",
+    "bundle:check": "node scripts/bundle-check.mjs",
     "verify": "npm run format:check && npm run lint && tsc --noEmit && npm test && npm run verify:exercises"
   },
   "dependencies": {
