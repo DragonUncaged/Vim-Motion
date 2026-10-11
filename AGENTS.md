@@ -154,6 +154,19 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
 - **The mastery formula is written down once**, at the top of `lib/stats/mastery.ts`.
   `motionMastery` / `weaknessWeight` exist nowhere else, and `lib/drills` reads them from there;
   a second copy would drift and the heatmap would disagree with the drill that claims to fix it.
+- **The landing page must not contain the editor.** `/` builds at ~111 kB First Load and that is
+  an acceptance criterion, not a preference. `components/landing/HeroEditorMount` is the only
+  thing on `/` that can reach CodeMirror, and it defers `HeroDemo` behind
+  `dynamic(..., { ssr: false })` until idle or the first interaction. `npm run bundle:check`
+  is that proof and it no longer has to be done by hand: it reads
+  `.next/app-build-manifest.json` after a build and fails on a CodeMirror marker in `/`'s
+  chunks, on a syntax-parser or curriculum marker in any route's, and on `/` exceeding its
+  gzip budget. Its
+  markers are DOM class names and webpack-preserved export bindings, checked against a
+  _minified_ build — package paths like `@lezer/` survive in sources and nowhere in the output —
+  and `controlProblems` asserts each marker is still findable somewhere, so the grep cannot
+  quietly stop matching. The curriculum markers are real lesson text rather than field names,
+  because `startDoc` as a _key_ appears wherever `lib/engine` reads one.
 
 ## The editor and the engine
 
@@ -269,6 +282,11 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
   `pageMetadata` and nothing hand-writes a partial one. The title template does not reach
   Open Graph either: `og:title` is spelled out with the suffix, and `/` passes `shareTitle`
   because the template does not apply to the page beside the layout that declares it.
+- **JSON-LD is a plain text child of `<script type="application/ld+json">`, not
+  `dangerouslySetInnerHTML`.** React does not entity-escape a script's text child, so the
+  banned construct (docs/CONTRACT.md §5) needs no exception; `<` is written `\u003c` so a
+  `</script>` inside a string cannot end the element. `scripts/csp-hashes.mjs` hashes it like
+  any inline script even though a non-JavaScript type is a data block CSP never checks.
 - **The 135 per-exercise speedrun pages are `noindex, follow`** — the same page with a
   different exercise loaded after hydration. `app/sitemap.ts` already leaves them out; the
   meta says the same thing to a crawler that arrived by following a link.
@@ -323,6 +341,19 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
   is now the React Compiler set.** Twelve of the fourteen new rules pass and are on.
   `set-state-in-effect` and `refs` are off, with the reason and the remedy at the block that
   disables them — adopting either is a change to the components, not to the lint config.
+- **Two things in `next.config.ts` keep `csp-hashes.json` reproducible, and the set is
+  worthless without both.** `generateBuildId` is pinned to the lockfile, because the build id
+  is in every page's flight payload and the default is random. `PathIndependentModuleIds` folds
+  the project's absolute path out of webpack's module identifiers before they are hashed into
+  module ids (sized to the module count, because an id's width is written into every reference
+  to it and taking the hash whole put 2 kB on the shared chunk and `/` over its 111 kB budget) — Next's loaders embed that path URL-encoded in a loader query, where webpack's
+  own relativising does not reach, and without this the hashes are a function of the directory
+  the repo is checked out into and `npm run build` is red everywhere but the machine that last
+  regenerated the file. **Test either with a second clone at a different path, never a second
+  build in the same one.**
+- **`csp-hashes.json` is machine-owned.** Regenerate with `npm run csp:hashes` and build again;
+  never hand-edit it. A hash typed in allows a script that does not exist, one left out blanks
+  a page.
 - **CI has still never run on GitHub** — there is no remote. The substitute is both jobs,
   step by step, in a fresh clone at a path that is not this one. Run them there and not in a
   worktree, whose warm `node_modules` and warm `.next` hide exactly the failures CI exists to
