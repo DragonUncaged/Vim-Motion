@@ -18,7 +18,8 @@
     "csp:check": "node scripts/csp-check.mjs",
     "icons": "node scripts/generate-icons.mjs",
     "bundle:check": "node scripts/bundle-check.mjs",
-    "verify": "npm run format:check && npm run lint && tsc --noEmit && npm test && npm run verify:exercises"
+    "verify": "npm run format:check && npm run lint && tsc --noEmit && npm test && npm run verify:exercises",
+    "e2e": "playwright test"
   },
   "dependencies": {
     "@codemirror/commands": "6.11.0",
