@@ -45,6 +45,7 @@ That is the whole setup. No `.env`, no database, no services to start.
 | `npm run verify`           | **The one command CI runs**: format check, lint, `tsc --noEmit`, unit tests, and every exercise replayed |
 | `npm run verify:exercises` | Just the exercise replay                                                                                 |
 | `npm test`                 | Unit tests only (`node:test`, via `scripts/test.mjs`)                                                    |
+| `npm run e2e`              | Browser gate: layout, console and off-origin requests, in Chromium. Needs `npm run build` first          |
 | `npm run csp:hashes`       | Rewrite `csp-hashes.json` from the last build's output. See below                                        |
 | `npm run icons`            | Regenerate every icon and the two proof sheets in `docs/icons/` from one geometry                        |
 | `npm run format`           | Rewrite with Prettier                                                                                    |
@@ -108,6 +109,7 @@ lib/
   theme/             The light/dark preference. Its own storage key, not part of progress,
                      and stamped onto <html> by a blocking script before first paint.
   site.ts            The site's URL and its repository. See "Forking it" below.
+e2e/                 The Playwright layout gate. Outside `verify` on purpose.
 scripts/
   test.mjs             Finds every __tests__ directory and runs it with node:test.
   verify-exercises.ts  Replays all 135 solutions through the real editor.
@@ -157,6 +159,23 @@ these and it is yours:
 
 The one thing not to change: there is no sign-in, no account and no backend anywhere in here,
 and no configuration that could add one. That is the whole point of the project.
+
+## Tooling notes
+
+- **ESLint 10, flat config only.** Everything lives in `eslint.config.mjs`. There is no
+  `.eslintrc` and there cannot be one — ESLint 10 dropped the legacy format outright. The
+  config carries type-aware rules over `lib/` and `components/`,
+  the full `jsx-a11y` recommended set, and three project rules that fail with an explanation:
+  no `dangerouslySetInnerHTML`, no `defaultKeymap`/`basicSetup` import, no import of the
+  reference vim engine.
+- **Prettier is pinned to an exact version, deliberately.** Its output changes between minor
+  releases, and a caret range means two contributors reformat each other's files forever.
+  Don't widen it.
+- **Next is pinned to 15.** `create-next-app` now defaults to 16; this project has not been
+  verified against it. `eslint-config-next` is the exception and tracks 16: its 15 line caps
+  its ESLint peer at 9. It is a linter and shares nothing with the framework at runtime.
+- **`sharp` is undeclared on purpose.** `npm run icons` needs it; it arrives with `next` as an
+  optional dependency, and nothing in `verify` or `build` runs the script.
 
 ## Licence
 
