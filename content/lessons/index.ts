@@ -5,6 +5,7 @@ import { lessons as operatorsLessons } from './operators';
 import { lessons as reactTsxLessons } from './react-tsx';
 import { lessons as goLessons } from './go';
 import { lessons as cppLessons } from './cpp';
+import { lessons as advancedLessons } from './advanced';
 
 const inOrder = (lessons: Lesson[]): Lesson[] => [...lessons].sort((a, b) => a.order - b.order);
 
@@ -14,6 +15,7 @@ export const lessonsByModule: Record<ModuleId, Lesson[]> = {
   'react-tsx': inOrder(reactTsxLessons),
   go: inOrder(goLessons),
   cpp: inOrder(cppLessons),
+  advanced: inOrder(advancedLessons),
 };
 
 const orderedModules: Module[] = [...modules].sort((a, b) => a.order - b.order);

@@ -36,4 +36,11 @@ export const modules: Module[] = [
     blurb: 'Templates, namespaces, and deep nesting.',
     accent: 'coral',
   },
+  {
+    id: 'advanced',
+    name: 'Advanced editing',
+    order: 6,
+    blurb: 'Registers, macros, the global command and the dot, worked past the demo.',
+    accent: 'violet',
+  },
 ];
