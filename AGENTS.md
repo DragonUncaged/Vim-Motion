@@ -116,6 +116,11 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
   itself served; `app/fonts/README.md` has the provenance, the licences and how to take a
   newer version. Latin alone is deliberate — the handful of glyphs the site paints outside
   that range (→ ≥ ● ✓) are in no Google subset either and always came from the system stack.
+- **The display face is loaded at exactly the weight it is painted at.** `app/layout.tsx` asks
+  Fredoka for 600 and nothing else, because every display element resolves there. Styling one
+  at another weight does not fail loudly — the browser synthesises it — so `e2e/fonts.spec.ts`
+  walks the rendered pages and asserts every element in that family computes to 600, and that
+  three files are preloaded and no more. Adding a weight or a subset is what breaks that.
 - **Moving a family between the two font loaders moves the fallback face.** `next/font/google`
   reads `size-adjust` from a precalculated table; `next/font/local` computes it with fontkit
   from the file, and Next's own source says the table should go. The numbers differ by a few
@@ -200,6 +205,24 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
   today; and ghost offsets are recorded key by key on the attempt clock, because past one
   pause no single offset converts `KeystrokeRecord.at` stamps. The ghost pauses with the
   clock — `GhostReplay` freezes at `accumulatedMs`.
+- **Full screen is a fixed overlay, never `requestFullscreen()`.** Browsers exit native
+  fullscreen on `Esc` before any script sees the key, and `Esc` is the most-pressed key in
+  vim — the learner would be ejected every time they left insert mode. So the frame only
+  changes position: it stays where it is in the tree, so CodeMirror is never re-parented and
+  the buffer, cursor, mode and running attempt survive the toggle, and a placeholder holds
+  its slot so the page underneath does not reflow. `components/editor/fullScreen.tsx` carries
+  the reasoning and `e2e/fullscreen.spec.ts` presses `Esc` inside the overlay and requires it
+  to still be there. **Anything the surface says lives on the page, which is behind the
+  scrim**: the verdict, the numbers, the next-exercise button and the page's polite live
+  region were all unreachable, so solving an exercise expanded said nothing to anybody.
+  Outcome chrome reaches the frame through `resultBar` (it takes the key log's row and is
+  announced from a `role="status"` region mounted for the whole time the frame is open);
+  the drill and the speedrun MOVE theirs in rather than drawing it twice. The in-run
+  controls and the live `GhostRace` bar are still out there — see the report on
+  `fm/vc-fix-focus-clock`. And the hint beside the close button says "leaves full screen"
+  expanded, because `Esc` `Esc` there parks focus on that button and `Enter` finishes it. Two things that look like oversights and are not: no `aria-modal` (it
+  would hide each surface's polite live region, which is outside the frame and is how mode
+  changes are announced), and no `Esc` binding of any kind.
 - **`lib/engine/vim-bridge.ts` is value-import poison outside `components/editor/`.** It imports
   `@replit/codemirror-vim`, so one value import drags ~240 kB into that route's first load —
   silently, because the page still works. Page components type-import from
@@ -232,6 +255,14 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
   so thirty new lines scroll behind the frame the way a vim window scrolls. It used to be
   `min-h` plus a CodeMirror `max-height`, and the hero doubled in height as a visitor typed.
   The key strip under the status bar is one fixed row for the same reason.
+- **`useIsWideScreen` is `null` until the client knows.** The server pass used to say
+  `false`, so every prerendered lesson told a laptop it needed a keyboard until hydration.
+  Pages render `components/ExercisePlaceholder` (prompt shape + the loader's own editor
+  skeleton, at the pane's measured height) while it is `null`, then the pane or the notice;
+  the sandbox reserves the bare `EditorSkeleton` because it has no prompt panel. Compare
+  with `=== true` — a bare truthy test folds the undecided frame into the narrow one, which
+  is how every desktop lesson used to open by saying it wanted a keyboard. The decision still precedes the dynamic import, so a phone never
+  requests the editor chunk — `e2e/hydration.spec.ts` checks that by the chunk's content.
 - **The attempt clock ticks in the leaf that paints it, not in the hook.**
   `AttemptState.elapsedMs` is 0 while an attempt is running and the real duration once it
   ends; `runningSince` is the `performance.now()` of the first keystroke. A display reads
@@ -268,6 +299,13 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
   set the record, so the bar and the replay cannot describe two different runs. Which runs keep
   one, and why it is the only field on a record that is not write-once, is on
   `applyTimelinePolicy` in `lib/progress/storage.ts`.
+- **The ghost is a recording, never a second editor.** `@replit/codemirror-vim` keeps registers
+  on the module rather than the view, so a second instance replaying `yy` beside a live attempt
+  would overwrite the register that attempt is being judged on. `GhostReplay` plays against
+  `attempt.runningSince` — null until the first keystroke, which is the ghost's start gun too.
+  Driven off wall-clock time from mount it finishes before the learner types; driven off a bare
+  `0` it presses a key while the prompt is still being read. Both are pinned in
+  `e2e/speedrun.spec.ts`.
 - **`ExerciseStage` reports; the run decides.** `onFinished` fires the instant an attempt ends;
   whether that means a puff and the next exercise or a button is the run's policy. Reading the
   result off parent state inside `renderFinished` is a frame behind — use the argument.
@@ -292,6 +330,35 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
   meta says the same thing to a crawler that arrived by following a link.
 
 ## Checks
+
+`npm run verify` is the fast gate: format check, lint, `tsc --noEmit`, unit tests, and the
+exercise replay. `npm run e2e` is the browser gate. CI runs verify + build in one job and e2e
+in a second, so neither can drift from what a contributor runs.
+
+- **`playwright.config.ts` reuses whatever is on port 3971, whoever started it.** With
+  several worktrees of this repo on one machine, another checkout's `next start` on that port
+  is silently what your suite tests — a whole run passed against the wrong build before this
+  was noticed. Your own stale server does it too: one left over from an earlier build keeps
+  serving that build's HTML and chunk names out of memory, so a spec asserting which chunks a
+  page fetches can report a change did not work when it is reading a two-builds-old server.
+  Serve your own build on a port of your own and point the suite at it:
+  `npx next start -p 3973 & BASE_URL=http://localhost:3973 npm run e2e`.
+- **Nothing in `verify` lays anything out.** The replay harness is jsdom with a synthetic
+  8x16px monospace geometry and no CSS, so a collapsed grid, a clipped line, a missing focus
+  ring, a first paint in the wrong theme and a request to a third party cannot turn it red.
+  That is what `e2e/layout.spec.ts` is for: every route at 375/768/1440 in both themes
+  asserting the document never scrolls sideways, the console is clean and nothing leaves the
+  origin, plus one named test per bug actually reproduced in a browser. It needs
+  `npm run build` first (it serves the built output, not `next dev`) and a one-off
+  `npx playwright install chromium`. Keep it out of `verify` — the browser is a 177 MB
+  download and `verify` is the inner loop.
+- **A bare `fr` grid track is a bug waiting for content.** `1fr` is `minmax(auto, 1fr)`, and
+  `auto` is min-content, so anything unbreakable in that track — a typed CodeMirror line, a
+  long identifier in prose — refuses to shrink and takes the width from its siblings. Write
+  `minmax(0, …fr)` and put `min-w-0` on the grid children; the item keeps `min-width: auto`
+  even inside a capped track. This shipped twice, on the landing hero and in `CheatRow`.
+- **Chrome cannot make a window narrower than 500px.** A `resize 375` silently gives you 500
+  and a phone-width pass that proved nothing. Use device emulation for real narrow widths.
 
 - **Watch for a check that passes because it never ran.** `npm test` used to enumerate test
   directories by hand and silently skipped `lib/stats/__tests__` — four files over the most
@@ -352,6 +419,9 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
   the repo is checked out into and `npm run build` is red everywhere but the machine that last
   regenerated the file. **Test either with a second clone at a different path, never a second
   build in the same one.**
+- **A wholesale `e2e` failure usually means the CSP, not the layout.** Under a stale policy the
+  browser refuses every inline script, nothing hydrates (`[pageerror] t.reason.enqueueModel is
+not a function`) and all ~69 layout assertions fail together. Check `npm run build` first.
 - **`csp-hashes.json` is machine-owned.** Regenerate with `npm run csp:hashes` and build again;
   never hand-edit it. A hash typed in allows a script that does not exist, one left out blanks
   a page.
