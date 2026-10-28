@@ -2,7 +2,7 @@
 
 Learn vim motions by doing them, in a real vim editor, in your browser.
 
-Forty lessons and 135 exercises, from `hjkl` up to block-visual edits on real `.tsx`, `.go`
+Forty-five lessons and 154 exercises, from `hjkl` up to block-visual edits on real `.tsx`, `.go`
 and `.cpp` files. Every exercise is judged on the buffer you end up with, so `dw`, `de` and
 `vex` all count if the text matches. There is a timed drill mode, a speedrun that races your
 own previous best, a free-play sandbox with a help panel that reads your half-typed command,
@@ -96,7 +96,7 @@ components/
   stats/ cheatsheet/ landing/ about/ prose/
 content/
   types.ts           The content contract. Every lesson is typed against it.
-  modules.ts         The five modules, in curriculum order.
+  modules.ts         The six modules, in curriculum order.
   lessons/<module>/  One file per lesson, plus a barrel per module.
   cheatsheet.ts      The motion reference, grouped by operator and by task.
 lib/
@@ -112,7 +112,7 @@ lib/
 e2e/                 The Playwright layout gate. Outside `verify` on purpose.
 scripts/
   test.mjs             Finds every __tests__ directory and runs it with node:test.
-  verify-exercises.ts  Replays all 135 solutions through the real editor.
+  verify-exercises.ts  Replays all 154 solutions through the real editor.
   jsdom-editor.ts      The jsdom DOM and geometry shim that replay runs on.
   csp-hashes.mjs       Rewrites csp-hashes.json from the build output.
   csp-check.mjs        Runs after every build; fails it if that file is stale.
