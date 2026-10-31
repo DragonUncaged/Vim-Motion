@@ -1,7 +1,15 @@
 # Project agent memory
 
 Vim Clay is a static, account-free site for learning vim motions. `README.md` is the
-orientation; this file is only what it does not say and the tree does not show.
+orientation and `CONTRIBUTING.md` is how to add a lesson; this file is only what neither of
+those says and the tree does not show.
+
+**`docs/CONTRACT.md` is the specification the site was built against**, and the ~60
+`docs/CONTRACT.md §N` comments in the tree cite it by section. Its section numbers are
+load-bearing — never renumber them. Where a section has been superseded by a file in the
+repository (the content types, the palette, the engine's signatures) it says so and names
+the file; it keeps the decision and the reason, never a second copy of a shape. §9 and §10
+were build-process and are gone; the numbers are not reused.
 
 ## The rule that overrides everything
 
@@ -52,6 +60,18 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
   bridge with trusted keydowns through jsdom's internal `fireAnEvent`, because `feedKeys`
   never reaches the capture listener and public `dispatchEvent` cannot make a trusted event.
   When the replay fails, fix the exercise, never the assertion.
+- **`feedKeys` owns `:`, `/` and `?` outside insert mode, and a solution can lose keys to
+  that silently.** It reads the rest of the string as prompt text up to the next `<CR>`, so
+  `r:` makes it swallow everything after the `r` and the exercise fails with an unedited
+  buffer and no error at all. `content/lessons/__tests__/advanced.test.ts` asserts no
+  solution anywhere does that, and that none leaves the command line open. Insert mode's one
+  two-key command, `<C-r><register>`, is the mirror image and is handled explicitly — both
+  keys go to vim, or the register name is typed as text.
+- **The shipped editor diverges from real vim in about a dozen places** and the content is
+  written to match the _shipped_ one. The list is in CONTRIBUTING.md under "Where the editor
+  differs from real vim" — it now covers the `:s` regex dialect, the ex commands that do not
+  exist, and a macro that does not stop at the end of the buffer. Do not "correct" content
+  towards vim.
 - **`content/cheatsheet.ts` names motions, never lesson slugs.**
   `components/cheatsheet/lessonLinks` builds the motion-to-lesson index from `content/lessons`,
   so a module landing later wires itself in. `motionFamily` there folds `dt,` and `t>` onto the
@@ -378,6 +398,9 @@ in a second, so neither can drift from what a contributor runs.
   a line that is not the one that cares. `no-unnecessary-condition` is deliberately still
   off — 39 hits, mostly guards on `@replit/codemirror-vim` and jsdom values whose types are
   more confident than the packages are.
+- **Comments say only what the code cannot.** Delete a comment that restates the code, its
+  names or its test; keep the rest to one line. Tool directives and `docs/CONTRACT.md §N`
+  citations stay.
 - **`./` for a sibling, `@/` for everything else, and `lib/` never imports `components/`.**
   Both are `no-restricted-imports` in `eslint.config.mjs`, scoped per directory; a
   `__tests__` file may still reach one level up to the module it tests. Move a type or a

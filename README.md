@@ -117,6 +117,9 @@ scripts/
   csp-hashes.mjs       Rewrites csp-hashes.json from the build output.
   csp-check.mjs        Runs after every build; fails it if that file is stale.
   generate-icons.mjs   Every icon, from one geometry.
+docs/
+  CONTRACT.md        The design contract the whole site was built against. The comments
+                     that say "docs/CONTRACT.md §6" mean this file.
   icons/             Proof sheets for the icon at 16px and under Android's mask.
 ```
 
@@ -128,6 +131,10 @@ Two rules the codebase actually depends on, both explained where they live:
 - **The editor stays out of the landing page's initial bundle.** `/` is 111 kB First Load and
   that is a criterion, not a preference. `components/landing/HeroEditorMount` is the only thing
   on `/` that can reach CodeMirror, behind `dynamic(..., { ssr: false })`.
+
+[`docs/CONTRACT.md`](docs/CONTRACT.md) is the specification this was built against, and it is
+what the `docs/CONTRACT.md §N` comments scattered through the code point at. `AGENTS.md`
+carries the rest of what is not obvious from the tree.
 
 ## Adding a lesson
 
@@ -180,6 +187,8 @@ and no configuration that could add one. That is the whole point of the project.
 - **Next is pinned to 15.** `create-next-app` now defaults to 16; this project has not been
   verified against it. `eslint-config-next` is the exception and tracks 16: its 15 line caps
   its ESLint peer at 9. It is a linter and shares nothing with the framework at runtime.
+- **`docs/` holds the evidence, not prose about it.** The palette's contrast numbers in
+  `CONTRACT.md`, and the icon at 16 pixels and under Android's mask in `icons/`.
 - **`sharp` is undeclared on purpose.** `npm run icons` needs it; it arrives with `next` as an
   optional dependency, and nothing in `verify` or `build` runs the script.
 
