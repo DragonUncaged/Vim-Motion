@@ -129,6 +129,12 @@ Two rules the codebase actually depends on, both explained where they live:
   that is a criterion, not a preference. `components/landing/HeroEditorMount` is the only thing
   on `/` that can reach CodeMirror, behind `dynamic(..., { ssr: false })`.
 
+## Adding a lesson
+
+One file, one line in a barrel, then `npm run verify`. The replay harness will tell you
+whether the exercise you wrote is actually solvable before anyone else finds out.
+[CONTRIBUTING.md](CONTRIBUTING.md) walks the whole thing with a complete worked example.
+
 ## Forking it
 
 Nine places carry anything that is "this deployment" rather than "this project". Change
