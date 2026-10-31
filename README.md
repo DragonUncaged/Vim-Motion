@@ -195,3 +195,4 @@ and no configuration that could add one. That is the whole point of the project.
 ## Licence
 
 MIT. See [LICENSE](LICENSE). Fork it, host it, teach with it.
+[CHANGELOG.md](CHANGELOG.md) is what has landed so far.
