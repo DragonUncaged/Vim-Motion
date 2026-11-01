@@ -1,0 +1,30 @@
+version: 2
+
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ['*']
+    commit-message:
+      prefix: ci
+
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    # These change behaviour often enough to review one at a time.
+    groups:
+      production:
+        dependency-type: production
+        exclude-patterns:
+          - next
+          - react
+          - react-dom
+          - '@replit/codemirror-vim'
+      development:
+        dependency-type: development
+    commit-message:
+      prefix: deps
