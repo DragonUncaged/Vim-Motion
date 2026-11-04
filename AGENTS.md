@@ -17,6 +17,20 @@ No sign-in, no paywall, no account, no backend, ever. No API routes, no env vars
 server-side state, no analytics. Progress lives in `localStorage` and moves between devices
 through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier") is a bug.
 
+None of that is advertised: visible copy says what the site teaches, never what it costs,
+so "free", "no account", "no tracking" and "MIT licensed" appear nowhere a visitor reads —
+`lib/seo/__tests__/copy.test.ts` guards the derived titles and descriptions, where one tail
+would put the claim on 135 pages at once. Chrome copy is one idea per panel: delete the
+sentence that repeats, hedges, or explains what the interface already shows, rather than
+compressing it into a denser one. Vim vocabulary belongs in the lessons and the sandbox's
+help panel, where it _is_ the subject; a button, a notice or an empty state has to read
+without it. Lesson prose is tightened, never gutted — keep every sentence carrying a fact a
+learner acts on. Copy must not promise an interaction the reader cannot see from where they
+read it: the header of `/cheatsheet` invited a keypress whose 25 lit keycaps were all below
+the fold of a 12,000px page, and the 404's invitation was to press caps mounted
+`live={false}`. The measurements are on `components/cheatsheet/CheatRow.tsx` and
+`components/NotFound.tsx`.
+
 ## Content
 
 - **`content/types.ts` is the contract ~135 hand-written exercises are typed against.** One
@@ -121,6 +135,13 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
   The one second component allowed beside the first is `<JsonLd>` on `/`, `/learn` and
   `/learn/[slug]`: structured data is the route's own metadata and Next's `metadata` export
   cannot carry it.
+- **Every icon is generated; none of them is hand-authored.** `app/icon.svg`,
+  `app/favicon.ico`, `app/apple-icon.png`, `public/icons/*` and `public/og.png` all come out of
+  `node scripts/generate-icons.mjs`, so editing one by hand is undone by the next run.
+  Change the geometry and palette at the top of that script instead; its header is where the
+  design reasoning lives and `docs/icons/README.md` carries the proof sheets. The script needs
+  `sharp`, which is undeclared on purpose — it arrives with `next` as an optionalDependency,
+  and nothing in `verify` or `build` runs the script.
 - **Tailwind utilities lose to the clay classes, and so does a second clay class.**
   `app/globals.css` sits outside `@layer`, so `.clay-key`'s own `min-width` beats a `min-w-*`
   utility at equal specificity. To change a clay element's geometry from a component, use the
@@ -334,6 +355,13 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
 
 ## Findability
 
+- **`lib/seo` owns every `<title>`, every `<meta name="description">` and every JSON-LD
+  graph.** Route files call `pageMetadata`; nothing writes a title in place. The lesson and
+  drill copy is derived from the curriculum, so a lesson added later gets a real title with
+  nothing to remember; `LESSON_INTENT` is an override for the dozen lessons whose own title
+  is a house term rather than a search phrase ("Small edits" → "Fix a typo in vim"), and a
+  lesson missing from it still gets the derived form. `lib/seo/__tests__` holds every page
+  to the snippet widths and fails on a dead override key.
 - **Metadata is shallowly merged, so a page that declares `openGraph` replaces the layout's
   whole object.** Setting only `openGraph.title` silently drops `og:site_name`, `og:type`
   and the image — which is why every route builds the complete object through
@@ -348,6 +376,12 @@ through export/import. Copy that merely _hints_ at a gate ("upgrade", "free tier
 - **The 135 per-exercise speedrun pages are `noindex, follow`** — the same page with a
   different exercise loaded after hydration. `app/sitemap.ts` already leaves them out; the
   meta says the same thing to a crawler that arrived by following a link.
+- **Three wins are dormant until `lib/site.ts` has an origin**: the canonical link, `og:url`,
+  and `og:image` (`public/og.png` is committed and unreferenced — a relative `og:image` is a
+  dead image on every platform, and Next would otherwise resolve it against
+  `http://localhost:3000`). JSON-LD URLs come out root-relative meanwhile, which resolves
+  against the document base. `docs/icons/README.md` has the card and what a share will look
+  like.
 
 ## Checks
 
@@ -448,6 +482,11 @@ not a function`) and all ~69 layout assertions fail together. Check `npm run bui
 - **`csp-hashes.json` is machine-owned.** Regenerate with `npm run csp:hashes` and build again;
   never hand-edit it. A hash typed in allows a script that does not exist, one left out blanks
   a page.
+- **Every `uses:` in the workflow is pinned to a commit SHA with its version in a trailing
+  comment**, because a tag is a mutable pointer into someone else's repository. Keep that form:
+  it is what `.github/dependabot.yml` bumps, SHA and comment together. `.npmrc` sets
+  `engine-strict=true` so a wrong Node fails at install with the range from `engines` rather
+  than later on a missing `--experimental-strip-types`.
 - **CI has still never run on GitHub** — there is no remote. The substitute is both jobs,
   step by step, in a fresh clone at a path that is not this one. Run them there and not in a
   worktree, whose warm `node_modules` and warm `.next` hide exactly the failures CI exists to
