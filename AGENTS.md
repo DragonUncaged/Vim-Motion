@@ -108,6 +108,14 @@ the fold of a 12,000px page, and the 404's invitation was to press caps mounted
   replace that block and re-apply the local edits — every one is marked `vim-clay:`, so
   `grep -n 'vim-clay:' app/globals.css` lists them. Never hardcode a box-shadow in a
   component: pick an elevation class and set `--clay-hue` with a `.hue-*` class.
+- **A custom property resolves at the element it is declared on, not where it is read.** Its
+  computed value is its specified value with `var()` already substituted. So a token declared
+  on `:root` that reads `var(--clay-hue)` freezes at the root's hue, and every descendant that
+  sets `--clay-hue` changes nothing. That shipped for months: every surface cast a violet drop
+  and the mode crossfade moved only the status bar. The whole derived chain therefore lives on
+  `*, ::before, ::after` in section 5 — **anything new that derives from `--clay-hue` goes
+  there too**, never on `:root`. Re-declaring per rule is the wrong fix: a `@keyframes` stop
+  cannot carry the declarations at all, so `clay-bloom` would stay broken.
 - **`.hue-*` is inert on `.clay-key`.** The keycap sets `--clay-hue` on itself at equal
   specificity and later in the file. A probe or a demo that puts `.hue-mint` on a keycap is
   measuring nothing; use `.clay-chip` or `.clay-card`.
@@ -264,6 +272,11 @@ the fold of a 12,000px page, and the 404's invitation was to press caps mounted
   expanded, because `Esc` `Esc` there parks focus on that button and `Enter` finishes it. Two things that look like oversights and are not: no `aria-modal` (it
   would hide each surface's polite live region, which is outside the frame and is how mode
   changes are announced), and no `Esc` binding of any kind.
+- **The sandbox is the one surface that never autofocuses its editor**, so its focus
+  overlay is always up and a spec that clicks `.cm-content` there times out on an intercepted
+  pointer event. Click `getByTestId('focus-overlay')` first, the way a learner does; the
+  lesson and practice stages focus themselves, which is why their specs only click it when it
+  happens to be there.
 - **`lib/engine/vim-bridge.ts` is value-import poison outside `components/editor/`.** It imports
   `@replit/codemirror-vim`, so one value import drags ~240 kB into that route's first load —
   silently, because the page still works. Page components type-import from
@@ -304,6 +317,16 @@ the fold of a 12,000px page, and the 404's invitation was to press caps mounted
   with `=== true` — a bare truthy test folds the undecided frame into the narrow one, which
   is how every desktop lesson used to open by saying it wanted a keyboard. The decision still precedes the dynamic import, so a phone never
   requests the editor chunk — `e2e/hydration.spec.ts` checks that by the chunk's content.
+- **`useHasKeyboard` is the hero's version of the same question, and copy reads it too.**
+  Width plus `pointer: fine`, `null` until the client knows, in
+  `components/hooks/useHasKeyboard.ts` — the hero's editor box and the strip of caps beside
+  it both take it, because one saying "press one of these" while the other says the editor
+  wants a keyboard is what it exists to prevent. Anything that _promises a keypress_ hangs
+  off it and compares with `=== false`, so the undecided frame keeps the laptop's wording.
+  The same fault was on `/sandbox` twice (a source picker and a help note above "the editor
+  needs a keyboard"), so look for it whenever a panel is shown on both. **None of it
+  reproduces from a resize** — a 375px laptop window still has keys. `e2e/hero-keys.spec.ts`
+  and `e2e/sandbox-phone.spec.ts` use Playwright's `devices['Pixel 7']` for that reason.
 - **The attempt clock ticks in the leaf that paints it, not in the hook.**
   `AttemptState.elapsedMs` is 0 while an attempt is running and the real duration once it
   ends; `runningSince` is the `performance.now()` of the first keystroke. A display reads
