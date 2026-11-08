@@ -2,6 +2,9 @@
 
 Learn vim motions by doing them, in a real vim editor, in your browser.
 
+![The Vim Clay home page in light mode: the headline beside a live vim editor on the line "the slow way is the long way", with a pending `d` in the status bar and the key strip](docs/screenshots/home-light.png#gh-light-mode-only)
+![The Vim Clay home page in dark mode: the headline beside a live vim editor on the line "the slow way is the long way", with a pending `d` in the status bar and the key strip](docs/screenshots/home-dark.png#gh-dark-mode-only)
+
 Forty-five lessons and 154 exercises, from `hjkl` up to block-visual edits on real `.tsx`, `.go`
 and `.cpp` files. Every exercise is judged on the buffer you end up with, so `dw`, `de` and
 `vex` all count if the text matches. There is a timed drill mode, a speedrun that races your
@@ -11,6 +14,25 @@ a searchable 171-entry cheatsheet, and a stats page with a per-motion heatmap.
 **No sign-in. No paywall. No account. No backend.** Every lesson, drill and statistic is open
 to an anonymous visitor on first page load. Your progress lives in `localStorage`, and moves
 between machines as a JSON file you export and import yourself.
+
+## Screenshots
+
+Each screen is shown in the theme that matches your GitHub setting.
+
+The lesson index lists every module in order, with how much of each lesson you have finished.
+
+![The lesson index in light mode: a "Pick up where you left off" panel at 67% and the Basic vim module with its lesson cards and completion rings](docs/screenshots/learn-light.png#gh-light-mode-only)
+![The lesson index in dark mode: a "Pick up where you left off" panel at 67% and the Basic vim module with its lesson cards and completion rings](docs/screenshots/learn-dark.png#gh-dark-mode-only)
+
+A lesson explains a motion beside an exercise you solve in a real editor, here stripping props from a JSX tag.
+
+![The "Hopping tags" lesson in light mode: explanation cards on the left, exercise 2 of 4 on the right, and a TSX buffer with `f Space d t` typed and `dt` pending in the status bar](docs/screenshots/lesson-light.png#gh-light-mode-only)
+![The "Hopping tags" lesson in dark mode: explanation cards on the left, exercise 2 of 4 on the right, and a TSX buffer with `f Space d t` typed and `dt` pending in the status bar](docs/screenshots/lesson-dark.png#gh-dark-mode-only)
+
+Full screen gives the same editor the whole window without leaving the exercise.
+
+![The same lesson's editor expanded to fill the window in light mode, with the TSX buffer, `dt` pending and a "Leave full screen" button](docs/screenshots/lesson-fullscreen-light.png#gh-light-mode-only)
+![The same lesson's editor expanded to fill the window in dark mode, with the TSX buffer, `dt` pending and a "Leave full screen" button](docs/screenshots/lesson-fullscreen-dark.png#gh-dark-mode-only)
 
 ## Why this exists
 
