@@ -34,6 +34,31 @@ Full screen gives the same editor the whole window without leaving the exercise.
 ![The same lesson's editor expanded to fill the window in light mode, with the TSX buffer, `dt` pending and a "Leave full screen" button](docs/screenshots/lesson-fullscreen-light.png#gh-light-mode-only)
 ![The same lesson's editor expanded to fill the window in dark mode, with the TSX buffer, `dt` pending and a "Leave full screen" button](docs/screenshots/lesson-fullscreen-dark.png#gh-dark-mode-only)
 
+The practice page picks drills from the motions you are worst at.
+
+![The practice page in light mode: drill, speedrun and sandbox cards above a list of the weakest motions with their mastery percentages](docs/screenshots/practice-light.png#gh-light-mode-only)
+![The practice page in dark mode: drill, speedrun and sandbox cards above a list of the weakest motions with their mastery percentages](docs/screenshots/practice-dark.png#gh-dark-mode-only)
+
+A speedrun races one exercise against a replay of your best run, key by key.
+
+![A Go speedrun in light mode: this run's bar level with the ghost's bar, the ghost's keys replaying at 16 of 23, and the buffer half way through retyping the parameters of `New`](docs/screenshots/speedrun-light.png#gh-light-mode-only)
+![A Go speedrun in dark mode: this run's bar level with the ghost's bar, the ghost's keys replaying at 16 of 23, and the buffer half way through retyping the parameters of `New`](docs/screenshots/speedrun-dark.png#gh-dark-mode-only)
+
+The sandbox is an editor with nothing to solve, and its help panel reads the command you have half typed.
+
+![The sandbox in light mode: a React file with `2d` pending, and the help panel headed "Delete how much?" listing what can follow, each with its count applied](docs/screenshots/sandbox-light.png#gh-light-mode-only)
+![The sandbox in dark mode: a React file with `2d` pending, and the help panel headed "Delete how much?" listing what can follow, each with its count applied](docs/screenshots/sandbox-dark.png#gh-dark-mode-only)
+
+The cheatsheet searches by key or by plain words, and links each entry to the lesson that teaches it.
+
+![The cheatsheet in light mode with "quotes" in the search box and six matches, from `di"` to `a"`](docs/screenshots/cheatsheet-light.png#gh-light-mode-only)
+![The cheatsheet in dark mode with "quotes" in the search box and six matches, from `di"` to `a"`](docs/screenshots/cheatsheet-dark.png#gh-dark-mode-only)
+
+The stats page colours each key by how well you know the motions on it, and lists the ones costing you the most.
+
+![The stats page in light mode: a keyboard heatmap with 41 practised caps shaded from red to green, above the weakest motions list](docs/screenshots/stats-light.png#gh-light-mode-only)
+![The stats page in dark mode: a keyboard heatmap with 41 practised caps shaded from red to green, above the weakest motions list](docs/screenshots/stats-dark.png#gh-dark-mode-only)
+
 ## Why this exists
 
 The good interactive vim trainers gate their best content — usually the part that uses real
